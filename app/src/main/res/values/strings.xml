@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">BusWaitingTime</string>
+    <string-array name="hengqin_array">
+        <item>25B</item>
+        <item>25BS</item>
+        <item>50</item>
+        <item>102X</item>
+        <item>701X (往望德聖母灣)</item>
+        <item>701X (往澳大)</item>
+        <item>其它</item>
+    </string-array>
+</resources>
+
