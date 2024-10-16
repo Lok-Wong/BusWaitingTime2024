@@ -4,15 +4,15 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-import android.Manifest;
-import android.app.Activity;
-import android.app.Dialog;
+import android.support.constraint.ConstraintLayout;
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.OnLifecycleEvent;
 import android.arch.lifecycle.ProcessLifecycleOwner;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -21,7 +21,6 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,42 +34,64 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.sql.Time;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements LifecycleObserver {
+    
 
-    EditText surveyorNo, location, route1,route2, route3, startTime_1, startTime_2, startTime_3,endTime_1,endTime_2,endTime_3,licensePlate_1,licensePlate_2,licensePlate_3;
-    Button startButton_1,startButton_2,startButton_3, endButton_1, endButton_2, endButton_3, saveButton_1, saveButton_2, saveButton_3 , stationButton;
-    RadioGroup genderGroup_1, ageGroup_1, genderGroup_2 , ageGroup_2, genderGroup_3 , ageGroup_3, surveyType_rbg;
+    EditText surveyorNo, location,
+            route1, route2, route3, route4,
+            startTime_1, startTime_2, startTime_3, startTime_4,
+            endTime_1, endTime_2, endTime_3, endTime_4,
+            licensePlate_1, licensePlate_2, licensePlate_3, licensePlate_4;
+
+    Button
+            startButton_1, startButton_2, startButton_3, startButton_4,
+            endButton_1, endButton_2, endButton_3, endButton_4,
+            saveButton_1, saveButton_2, saveButton_3, saveButton_4,
+            Group1recordButton_1, Group1recordButton_2, Group1recordButton_3, Group1recordButton_4,
+            Group2recordButton_1, Group2recordButton_2, Group2recordButton_3, Group2recordButton_4,
+            Group3recordButton_1, Group3recordButton_2, Group3recordButton_3, Group3recordButton_4,
+            Group4recordButton_1, Group4recordButton_2, Group4recordButton_3, Group4recordButton_4,
+            cleanRecordButton,
+            stationButton;
+    FrameLayout mask_layout;
+    ConstraintLayout constraint, overlay;
+    RadioGroup
+            ageGroup_1, ageGroup_2, ageGroup_3, ageGroup_4,
+            genderGroup_1, genderGroup_2, genderGroup_3, genderGroup_4,
+            surveyType_rbg;
     RadioButton genderM_1, genderF_1, under20_1, from20to45_1, above45_1,
-                genderM_2, genderF_2, under20_2, from20to45_2, above45_2,
-                genderM_3, genderF_3, under20_3, from20to45_3, above45_3,
-                rb1,rb2,rb3,
-                surveyType_1, surveyType_2, surveyType_3;
-    TextView textView1 , textView2, textView15,textView16,textView17;
+            genderM_2, genderF_2, under20_2, from20to45_2, above45_2,
+            genderM_3, genderF_3, under20_3, from20to45_3, above45_3,
+            genderM_4, genderF_4, under20_4, from20to45_4, above45_4,
+            rb1, rb2, rb3, rb4,
+            surveyType_1, surveyType_2, surveyType_3;
+    TextView textView1, textView2,
+            Group1TextView3, Group2TextView3, Group3TextView3, Group4TextView3,
+            textView_Record_route_1,textView_Record_route_2,textView_Record_route_3,textView_Record_route_4,
+            textView_Record_licensePlate_1, textView_Record_licensePlate_2, textView_Record_licensePlate_3, textView_Record_licensePlate_4;
     String provider;
-    Spinner spinner1,spinner2,spinner3;
-    LocationManager locationManager ;
+    Spinner spinner1, spinner2, spinner3, spinner4;
+    LocationManager locationManager;
     double lat, lon;
-    String[] busNumArray = {"請選擇","25B","25BS","50","102X","701X (往望德聖母灣)","701X (往澳大)","其它"};
-    String[] typeList = {"普通","101x/102x","橫琴"};
+    String[] busNumArray = {"請選擇", "25B", "25BS", "50", "102X", "701X (往望德聖母灣)", "701X (往澳大)", "其它"};
+    String[] typeList = {"普通", "101x/102x", "橫琴"};
+
+    private float startX, startY;
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
@@ -80,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         return super.onKeyDown(keyCode, event);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +111,8 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         FindView();
         initialization();
         checkPermission();
+        setRecord();
+
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_dropdown_item, busNumArray
@@ -104,7 +128,29 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         spinner3.setAdapter(adapter);
         spinner3.setOnItemSelectedListener(new Spinner3Class());
 
+        spinner4.setAdapter(adapter);
+        spinner4.setOnItemSelectedListener(new Spinner4Class());
+        setupEditTextWatchers();
+        surveyorNo.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().isEmpty()) {
+                    textView1.setTextColor(getResources().getColor(R.color.red));
+                } else {
+                    textView1.setTextColor(getResources().getColor(R.color.colorPrimary));
+                }
+            }
+        });
         licensePlate_1.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -115,18 +161,17 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
 
-
             @Override
             public void afterTextChanged(Editable editable) {
                 boolean matches = editable.toString().matches("[A-Za-z][A-Za-z][\\d]{4}");
-                if (!matches){
-                    textView15.setTextColor(getResources().getColor(R.color.red));
+                if (!matches) {
+                    Group1TextView3.setTextColor(getResources().getColor(R.color.red));
                 } else {
-                    textView15.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    Group1TextView3.setTextColor(getResources().getColor(R.color.colorPrimary));
                 }
 
-                if (editable.length()==0) {
-                    textView15.setTextColor(getResources().getColor(R.color.colorPrimary));
+                if (editable.length() == 0) {
+                    Group1TextView3.setTextColor(getResources().getColor(R.color.colorPrimary));
                 }
             }
         });
@@ -146,15 +191,16 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
             public void afterTextChanged(Editable editable) {
 
                 boolean matches = editable.toString().matches("[A-Za-z][A-Za-z][\\d]{4}");
-                if (!matches){
-                    textView16.setTextColor(getResources().getColor(R.color.red));
+                if (!matches) {
+                    Group2TextView3.setTextColor(getResources().getColor(R.color.red));
 
                 } else {
-                    textView16.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    Group2TextView3.setTextColor(getResources().getColor(R.color.colorPrimary));
 
                 }
-                if (editable.length()==0) {
-                    textView16.setTextColor(getResources().getColor(R.color.colorPrimary));
+                if (editable.length() == 0) {
+                    Group2TextView3.setTextColor(getResources().getColor(R.color.colorPrimary));
+
                 }
             }
         });
@@ -172,21 +218,20 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
 
             @Override
             public void afterTextChanged(Editable editable) {
-                boolean matches = editable.toString().matches("[A-Za-z][A-Za-z][\\d]{4}");
-                if (!matches){
-                    textView17.setTextColor(getResources().getColor(R.color.red));
+                boolean matches = editable.toString().matches("^[A-Za-z][A-Za-z][\\d]{4}");
+                if (!matches) {
+                    Group3TextView3.setTextColor(getResources().getColor(R.color.red));
 
                 } else {
-                    textView17.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    Group3TextView3.setTextColor(getResources().getColor(R.color.colorPrimary));
 
                 }
-                if (editable.length()==0) {
-                    textView17.setTextColor(getResources().getColor(R.color.colorPrimary));
+                if (editable.length() == 0) {
+                    Group3TextView3.setTextColor(getResources().getColor(R.color.colorPrimary));
                 }
             }
         });
-
-        startTime_1.addTextChangedListener(new TextWatcher() {
+        licensePlate_4.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -194,72 +239,21 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
+
 
             @Override
             public void afterTextChanged(Editable editable) {
-              Boolean matchFormat = editable.toString().matches("[0-2]{2}[0-9]{2}\\/[0-1][0-9]\\/[0-2][0-9][[:blank:]][0-2][0-9]:[0-5][0-9]:[0-5][0-9]");
-              if (!matchFormat){
-                  startTime_1.setTextColor(getResources().getColor(R.color.red));
-              }else {
-                  startTime_1.setTextColor(getResources().getColor(R.color.colorPrimary));
-              }
+                boolean matches = editable.toString().matches("[A-Za-z][A-Za-z][\\d]{4}");
+                if (!matches) {
+                    Group4TextView3.setTextColor(getResources().getColor(R.color.red));
 
-              if (editable.toString().length() == 0){
-                  startTime_1.setTextColor(getResources().getColor(R.color.colorPrimary));
-              }
-            }
-        });
+                } else {
+                    Group4TextView3.setTextColor(getResources().getColor(R.color.colorPrimary));
 
-        startTime_2.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                Boolean matchFormat = editable.toString().matches("[0-2]{2}[0-9]{2}\\/[0-1][0-9]\\/[0-2][0-9][[:blank:]][0-2][0-9]:[0-5][0-9]:[0-5][0-9]");
-                if (!matchFormat){
-                    startTime_2.setTextColor(getResources().getColor(R.color.red));
-                }else {
-                    startTime_2.setTextColor(getResources().getColor(R.color.colorPrimary));
                 }
-
-                if (editable.toString().length() == 0){
-                    startTime_2.setTextColor(getResources().getColor(R.color.colorPrimary));
-                }
-            }
-        });
-
-        startTime_3.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                Boolean matchFormat = editable.toString().matches("[0-2]{2}[0-9]{2}\\/[0-1][0-9]\\/[0-2][0-9][[:blank:]][0-2][0-9]:[0-5][0-9]:[0-5][0-9]");
-                if (!matchFormat){
-                    startTime_3.setTextColor(getResources().getColor(R.color.red));
-                }else {
-                    startTime_3.setTextColor(getResources().getColor(R.color.colorPrimary));
-                }
-
-                if (editable.toString().length() == 0){
-                    startTime_3.setTextColor(getResources().getColor(R.color.colorPrimary));
+                if (editable.length() == 0) {
+                    Group4TextView3.setTextColor(getResources().getColor(R.color.colorPrimary));
                 }
             }
         });
@@ -280,16 +274,15 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
 
         stationButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (surveyType_1.isChecked())
-                {
+                if (surveyType_1.isChecked()) {
                     locationList(location, "請選擇站點︰", station.location);
+
                 }
-                if (surveyType_2.isChecked()){
+                if (surveyType_2.isChecked()) {
                     locationList(location, "請選擇站點︰", station.location_101x);
                 }
-                if (surveyType_3.isChecked()){
+                if (surveyType_3.isChecked()) {
                     locationList(location, "請選擇站點︰", station.location_hengqin);
-
                 }
             }
         });
@@ -297,25 +290,154 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         surveyType_rbg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                if (i == R.id.hengqin_rb){
+                if (i == R.id.hengqin_rb) {
                     spinner1.setVisibility(View.VISIBLE);
                     spinner2.setVisibility(View.VISIBLE);
                     spinner3.setVisibility(View.VISIBLE);
+                    spinner4.setVisibility(View.VISIBLE);
                     route1.setVisibility(View.GONE);
                     route2.setVisibility(View.GONE);
                     route3.setVisibility(View.GONE);
-                }
-                else {
+                    route4.setVisibility(View.GONE);
+                } else {
                     spinner1.setVisibility(View.GONE);
                     spinner2.setVisibility(View.GONE);
                     spinner3.setVisibility(View.GONE);
+                    spinner4.setVisibility(View.GONE);
                     route1.setVisibility(View.VISIBLE);
                     route2.setVisibility(View.VISIBLE);
                     route3.setVisibility(View.VISIBLE);
+                    route4.setVisibility(View.VISIBLE);
                 }
             }
         });
 
+    }
+
+
+    public void setupEditTextWatchers() {
+        addTextWatcherToEditText(startTime_1, endTime_1);
+        addTextWatcherToEditText(startTime_2, endTime_2);
+        addTextWatcherToEditText(startTime_3, endTime_3);
+        addTextWatcherToEditText(startTime_4, endTime_4);
+    }
+
+    public void performActionOne() {
+        SharedPreferences preferences = getSharedPreferences("AppData", MODE_PRIVATE);
+        String route01 = preferences.getString("data1_" + "route", "");
+        String licensePlate01 = preferences.getString("data1_" + "licensePlate", "");
+        route1.setText(route01);
+        licensePlate_1.setText(licensePlate01);
+    }
+
+    public void performActionTwo() {
+        SharedPreferences preferences = getSharedPreferences("AppData", MODE_PRIVATE);
+        String route02 = preferences.getString("data2_" + "route", "");
+        String licensePlate02 = preferences.getString("data2_" + "licensePlate", "");
+        route1.setText(route02);
+        licensePlate_1.setText(licensePlate02);
+    }
+
+    public void performActionThree() {
+        SharedPreferences preferences = getSharedPreferences("AppData", MODE_PRIVATE);
+        String route03 = preferences.getString("data3_" + "route", "");
+        String licensePlate03 = preferences.getString("data3_" + "licensePlate", "");
+        route1.setText(route03);
+        licensePlate_1.setText(licensePlate03);
+    }
+
+    public void performActionFour() {
+        SharedPreferences preferences = getSharedPreferences("AppData", MODE_PRIVATE);
+        String route04 = preferences.getString("data4_" + "route", "");
+        String licensePlate04 = preferences.getString("data4_" + "licensePlate", "");
+        route1.setText(route04);
+        licensePlate_1.setText(licensePlate04);
+    }
+
+    //監聽時間的方法
+    private void addTextWatcherToEditText(EditText startTime, EditText endTime) {
+        startTime.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String startTimeStr = editable.toString();
+                String endTimeStr = endTime.getText().toString();
+                if (isValidDateTime(editable.toString())) {
+                    if (endTime.getText().toString().isEmpty()) {
+                        startTime.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    } else if (isBeforeEndTime(startTimeStr, endTimeStr)) {
+                        startTime.setTextColor(getResources().getColor(R.color.colorPrimary));
+                        endTime.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    } else {
+                        startTime.setTextColor(getResources().getColor(R.color.red));
+//                        showToast("開始時間應小於結束時間");
+                    }
+                } else {
+
+                    startTime.setTextColor(getResources().getColor(R.color.red));
+//                    showToast("時間格式不正確");
+                }
+            }
+        });
+        endTime.addTextChangedListener(new TextWatcher() {
+                                           @Override
+                                           public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                           }
+
+                                           @Override
+                                           public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                           }
+
+                                           @Override
+                                           public void afterTextChanged(Editable editable) {
+                                               String startTimeStr = startTime.getText().toString();
+                                               String endTimeStr = editable.toString();
+                                               if (isValidDateTime(editable.toString())) {
+                                                   if (startTime.getText().toString().isEmpty()) {
+                                                       endTime.setTextColor(getResources().getColor(R.color.colorPrimary));
+                                                   } else if (isBeforeEndTime(startTimeStr, endTimeStr)) {
+                                                       startTime.setTextColor(getResources().getColor(R.color.colorPrimary));
+                                                       endTime.setTextColor(getResources().getColor(R.color.colorPrimary));
+                                                   } else {
+                                                       endTime.setTextColor(getResources().getColor(R.color.red));
+//                                                       showToast("结束時間應大於開始時間");
+                                                   }
+                                               } else {
+                                                   endTime.setTextColor(getResources().getColor(R.color.red));
+//                                                   showToast("時間格式不正確");
+                                               }
+                                           }
+                                       }
+        );
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean isValidDateTime(String dateTime) {
+        return dateTime.matches("^(19|20)\\d\\d[/](0[1-9]|1[0-2])[/](0[1-9]|[12][0-9]|3[01]) (2[0-3]|[01]?[0-9]):([0-5]?[0-9]):([0-5]?[0-9])$");
+    }
+
+    private boolean isBeforeEndTime(String startTime, String endTime) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
+        try {
+            Date startDate = dateFormat.parse(startTime);
+            Date endDate = dateFormat.parse(endTime);
+            boolean result = startDate.before(endDate);
+//            Log.d("TimeComparison", "isBeforeEndTime: " + result);
+            return result;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 
@@ -330,7 +452,45 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         return true;
     }
 
-    public void checkPermission(){
+    public void setRecord() {
+        SharedPreferences preferences = getSharedPreferences("AppData", MODE_PRIVATE);
+        String route01 = preferences.getString("data1_" + "route", "");
+        String route02 = preferences.getString("data2_" + "route", "");
+        String route03 = preferences.getString("data3_" + "route", "");
+        String route04 = preferences.getString("data4_" + "route", "");
+        String licensePlate01 = preferences.getString("data1_" + "licensePlate", "");
+        String licensePlate02 = preferences.getString("data2_" + "licensePlate", "");
+        String licensePlate03 = preferences.getString("data3_" + "licensePlate", "");
+        String licensePlate04 = preferences.getString("data4_" + "licensePlate", "");
+        textView_Record_route_1.setText(route01);
+        textView_Record_route_2.setText(route02);
+        textView_Record_route_3.setText(route03);
+        textView_Record_route_4.setText(route04);
+        textView_Record_licensePlate_1.setText(licensePlate01);
+        textView_Record_licensePlate_2.setText(licensePlate02);
+        textView_Record_licensePlate_3.setText(licensePlate03);
+        textView_Record_licensePlate_4.setText(licensePlate04);
+    }
+
+    public void cleanRecord(View view) {
+        if (view.getId() == R.id.cleanRecordButton) {
+            SharedPreferences preferences = getSharedPreferences("AppData", MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.clear();
+            editor.apply();
+            textView_Record_route_1.setText(null);
+            textView_Record_route_2.setText(null);
+            textView_Record_route_3.setText(null);
+            textView_Record_route_4.setText(null);
+            textView_Record_licensePlate_1.setText(null);
+            textView_Record_licensePlate_2.setText(null);
+            textView_Record_licensePlate_3.setText(null);
+            textView_Record_licensePlate_4.setText(null);
+        }
+
+    }
+
+    public void checkPermission() {
         final int PERMISSION_ALL = 1;
         final String[] PERMISSIONS = {
                 WRITE_EXTERNAL_STORAGE,
@@ -342,14 +502,15 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         }
     }
 
-    public void locationList(final TextView textView,final String title, final String[] list){
+    public void locationList(final TextView textView, final String title, final String[] list) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setTitle(title);
-        alertDialog.setItems(list , new DialogInterface.OnClickListener(){
-            public void onClick(DialogInterface dialog,  int which) {
+        alertDialog.setItems(list, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
 
                 textView.setText(list[which]);
-
+                textView.setTextColor(getResources().getColor(R.color.colorPrimary));
+                textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
             }
         });
         alertDialog.show();
@@ -359,25 +520,31 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         return (E) findViewById(id);
     }
 
-    public void initialization(){
+    public void initialization() {
         genderM_1.setChecked(true);
         genderM_2.setChecked(true);
         genderM_3.setChecked(true);
+        genderM_4.setChecked(true);
+
         under20_1.setChecked(true);
         under20_2.setChecked(true);
         under20_3.setChecked(true);
+        under20_4.setChecked(true);
 
         startTime_1.setText("");
         startTime_2.setText("");
         startTime_3.setText("");
+        startTime_4.setText("");
+
         endTime_1.setText("");
         endTime_2.setText("");
         endTime_3.setText("");
+        endTime_4.setText("");
 
         startTime_1.setEnabled(true);
         startTime_2.setEnabled(true);
         startTime_3.setEnabled(true);
-
+        startTime_4.setEnabled(true);
 //        endTime_1.setEnabled(false);
 //        endTime_2.setEnabled(false);
 //        endTime_3.setEnabled(false);
@@ -386,14 +553,17 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         licensePlate_1.setText("");
         licensePlate_2.setText("");
         licensePlate_3.setText("");
+        licensePlate_4.setText("");
 
         route1.setText("");
         route2.setText("");
         route3.setText("");
+        route4.setText("");
 
         spinner1.setSelection(0);
         spinner2.setSelection(0);
         spinner3.setSelection(0);
+        spinner4.setSelection(0);
 
 
 //        surveyType_1.setChecked(true);
@@ -401,11 +571,90 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         location.setEnabled(false);
     }
 
-    public void markTime(View view){
+    @SuppressLint("NonConstantResourceId")
+    public void loadRecord(View view) {
+        SharedPreferences preferences = getSharedPreferences("AppData", MODE_PRIVATE);
+        String route01 = preferences.getString("data1_" + "route", "");
+        String licensePlate01 = preferences.getString("data1_" + "licensePlate", "");
+        String route02 = preferences.getString("data2_" + "route", "");
+        String licensePlate02 = preferences.getString("data2_" + "licensePlate", "");
+        String route03 = preferences.getString("data3_" + "route", "");
+        String licensePlate03 = preferences.getString("data3_" + "licensePlate", "");
+        String route04 = preferences.getString("data4_" + "route", "");
+        String licensePlate04 = preferences.getString("data4_" + "licensePlate", "");
+        switch (view.getId()) {
+            case R.id.Group1recordButton_1:
+                route1.setText(route01);
+                licensePlate_1.setText(licensePlate01);
+                break;
+            case R.id.Group1recordButton_2:
+                route1.setText(route02);
+                licensePlate_1.setText(licensePlate02);
+                break;
+            case R.id.Group1recordButton_3:
+                route1.setText(route03);
+                licensePlate_1.setText(licensePlate03);
+                break;
+            case R.id.Group1recordButton_4:
+                route1.setText(route04);
+                licensePlate_1.setText(licensePlate04);
+                break;
+            case R.id.Group2recordButton_1:
+                route2.setText(route01);
+                licensePlate_2.setText(licensePlate01);
+                break;
+            case R.id.Group2recordButton_2:
+                route2.setText(route02);
+                licensePlate_2.setText(licensePlate02);
+                break;
+            case R.id.Group2recordButton_3:
+                route2.setText(route03);
+                licensePlate_2.setText(licensePlate03);
+                break;
+            case R.id.Group2recordButton_4:
+                route2.setText(route04);
+                licensePlate_2.setText(licensePlate04);
+                break;
+            case R.id.Group3recordButton_1:
+                route3.setText(route01);
+                licensePlate_3.setText(licensePlate01);
+                break;
+            case R.id.Group3recordButton_2:
+                route3.setText(route02);
+                licensePlate_3.setText(licensePlate02);
+                break;
+            case R.id.Group3recordButton_3:
+                route3.setText(route03);
+                licensePlate_3.setText(licensePlate03);
+                break;
+            case R.id.Group3recordButton_4:
+                route3.setText(route04);
+                licensePlate_3.setText(licensePlate04);
+                break;
+            case R.id.Group4recordButton_1:
+                route4.setText(route01);
+                licensePlate_4.setText(licensePlate01);
+                break;
+            case R.id.Group4recordButton_2:
+                route4.setText(route02);
+                licensePlate_4.setText(licensePlate02);
+                break;
+            case R.id.Group4recordButton_3:
+                route4.setText(route03);
+                licensePlate_4.setText(licensePlate03);
+                break;
+            case R.id.Group4recordButton_4:
+                route4.setText(route04);
+                licensePlate_4.setText(licensePlate04);
+                break;
+        }
+    }
+
+    public void markTime(View view) {
         Date currentTime = Calendar.getInstance().getTime();
         SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         String formatTime = simpledateformat.format(currentTime);
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.startButton_1:
                 startTime_1.setText(formatTime);
                 break;
@@ -414,6 +663,9 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                 break;
             case R.id.startButton_3:
                 startTime_3.setText(formatTime);
+                break;
+            case R.id.startButton_4:
+                startTime_4.setText(formatTime);
                 break;
             case R.id.endButton_1:
                 endTime_1.setText(formatTime);
@@ -424,49 +676,63 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
             case R.id.endButton_3:
                 endTime_3.setText(formatTime);
                 break;
+            case R.id.endButton_4:
+                endTime_4.setText(formatTime);
+                break;
             case R.id.saveButton_1:
                 int selectedID_1 = genderGroup_1.getCheckedRadioButtonId();
                 rb1 = findViewById(selectedID_1);
-                saveData(1, route1.getText().toString(), startTime_1.getText().toString(),endTime_1.getText().toString(), licensePlate_1.getText().toString(),rb1.getText().toString());
+                saveData(1, route1.getText().toString(), startTime_1.getText().toString(), endTime_1.getText().toString(), licensePlate_1.getText().toString(), rb1.getText().toString(), "data1_");
                 break;
             case R.id.saveButton_2:
                 int selectedID_2 = genderGroup_2.getCheckedRadioButtonId();
                 rb2 = findViewById(selectedID_2);
-                saveData(2, route2.getText().toString(), startTime_2.getText().toString(),endTime_2.getText().toString(), licensePlate_2.getText().toString(),rb2.getText().toString());
+                saveData(2, route2.getText().toString(), startTime_2.getText().toString(), endTime_2.getText().toString(), licensePlate_2.getText().toString(), rb2.getText().toString(), "data2_");
                 break;
             case R.id.saveButton_3:
                 int selectedID_3 = genderGroup_3.getCheckedRadioButtonId();
                 rb3 = findViewById(selectedID_3);
-                saveData(3, route3.getText().toString(), startTime_3.getText().toString(),endTime_3.getText().toString(), licensePlate_3.getText().toString(),rb3.getText().toString());
+                saveData(3, route3.getText().toString(), startTime_3.getText().toString(), endTime_3.getText().toString(), licensePlate_3.getText().toString(), rb3.getText().toString(), "data3_");
+                break;
+            case R.id.saveButton_4:
+                int selectedID_4 = genderGroup_4.getCheckedRadioButtonId();
+                rb4 = findViewById(selectedID_4);
+                saveData(4, route4.getText().toString(), startTime_4.getText().toString(), endTime_4.getText().toString(), licensePlate_4.getText().toString(), rb4.getText().toString(), "data4_");
                 break;
         }
 
     }
 
-    public void saveData(final int number, final String route, final String startTime, final String endTime , final String licensePlate, final String gender){
+    public void saveData(final int number, final String route, final String startTime, final String endTime, final String licensePlate, final String gender, String key) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-HH");
         Date currentTime = Calendar.getInstance().getTime();
         final String date = sdf.format(currentTime.getTime());
         boolean licensePlate_format = licensePlate.matches("[A-Za-z][A-Za-z][\\d]{4}");
-        boolean date_Format = startTime.matches("[0-2]{2}[0-9]{2}\\/[0-1][0-9]\\/[0-3][0-9][[:blank:]][0-2][0-9]:[0-6][0-9]:[0-6][0-9]");
-
-
+//      boolean date_Format = startTime.matches("[0-2]{2}[0-9]{2}\\/[0-1][0-9]\\/[0-3][0-9][[:blank:]][0-2][0-9]:[0-6][0-9]:[0-6][0-9]");
+        boolean date_FormatStart = isValidDateTime(startTime);
+        boolean date_FormatEnd = isValidDateTime(endTime);
+        boolean comparisonTime = isBeforeEndTime(startTime, endTime);
 //        textView1.setTextColor(Color.BLACK);
 //        textView2.setTextColor(Color.BLACK);
-//        textView15.setTextColor(Color.BLACK);
+//        Group1TextView3.setTextColor(Color.BLACK);
 
 
-        if (surveyorNo.getText().toString().isEmpty() || location.getText().toString().isEmpty() ){
+        if (surveyorNo.getText().toString().isEmpty()) {
             textView1.setTextColor(Color.RED);
+            Toast.makeText(this, "請輸入調查員編號", Toast.LENGTH_SHORT).show();
+        } else if (location.getText().toString().isEmpty()) {
             textView2.setTextColor(Color.RED);
-            Toast.makeText(this,"請輸入基本資料。" , Toast.LENGTH_SHORT).show();
-        }else if (!licensePlate_format){
-//            textView15.setTextColor(Color.RED);
-            Toast.makeText(this,"請輸入六位巴士車牌。" , Toast.LENGTH_SHORT).show();
-        }else{
-            if( route.isEmpty() || !date_Format || endTime.isEmpty()){
-                switch(number){
+            Toast.makeText(this, "請輸入調查地點", Toast.LENGTH_SHORT).show();
+        } else if (!licensePlate_format) {
+            Toast.makeText(this, "請輸入六位巴士車牌。", Toast.LENGTH_SHORT).show();
+        } else if (!date_FormatStart || !date_FormatEnd) {
+            Toast.makeText(this, "請輸入準確的時間", Toast.LENGTH_SHORT).show();
+        } else if (!comparisonTime) {
+            Toast.makeText(this, "開始時間應小於結束時間", Toast.LENGTH_SHORT).show();
+        } else {
+            if (route.isEmpty() || endTime.isEmpty()) {
+                switch (number) {
                     case 1:
                         Toast.makeText(this, "乘客A未完成記錄。", Toast.LENGTH_SHORT).show();
                         break;
@@ -476,9 +742,12 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                     case 3:
                         Toast.makeText(this, "乘客C未完成記錄。", Toast.LENGTH_SHORT).show();
                         break;
+                    case 4:
+                        Toast.makeText(this, "乘客D未完成記錄。", Toast.LENGTH_SHORT).show();
+                        break;
                 }
-            }else if (route.equals("請選擇")){
-                switch (number){
+            } else if (route.equals("請選擇")) {
+                switch (number) {
                     case 1:
                         Toast.makeText(this, "乘客A請選擇線路", Toast.LENGTH_SHORT).show();
                         break;
@@ -488,70 +757,96 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                     case 3:
                         Toast.makeText(this, "乘客C請選擇線路", Toast.LENGTH_SHORT).show();
                         break;
+                    case 4:
+                        Toast.makeText(this, "乘客D請選擇線路", Toast.LENGTH_SHORT).show();
+                        break;
 
                 }
 
-            }else{
+            } else {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
                 dialog.setTitle("確認儲存資料︰");
-                dialog.setMessage("調查員編號︰"+surveyorNo.getText().toString()+"\n調查地點︰"+location.getText().toString()+
+                dialog.setMessage("調查員編號︰" + surveyorNo.getText().toString() + "\n調查地點︰" + location.getText().toString() +
                         "\n乘客性別︰" + gender +
                         "\n巴士路線︰" + route +
                         "\n巴士車牌︰" + licensePlate +
                         "\n乘客到站時間︰" + startTime +
                         "\n乘客上車時間︰" + endTime);
-                dialog.setNegativeButton("N0",new DialogInterface.OnClickListener() {
+                dialog.setNegativeButton("N0", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface arg0, int arg1) {
 
                     }
                 });
-                dialog.setPositiveButton("YES",new DialogInterface.OnClickListener() {
+                dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface arg0, int arg1) {
-
-                        if (surveyType_1.isChecked()){
+                        SharedPreferences preferences = getSharedPreferences("AppData", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putString(key + "route", route);
+                        editor.putString(key + "licensePlate", licensePlate);
+                        editor.apply();
+                        Log.d("what22", "is" + editor);
+                        switch (key) {
+                            case "data1_":
+                                textView_Record_route_1.setText(route1.getText().toString());
+                                textView_Record_licensePlate_1.setText(licensePlate_1.getText().toString());
+                                break;
+                            case "data2_":
+                                textView_Record_route_2.setText(route2.getText().toString());
+                                textView_Record_licensePlate_2.setText(licensePlate_2.getText().toString());
+                                break;
+                            case "data3_":
+                                textView_Record_route_3.setText(route3.getText().toString());
+                                textView_Record_licensePlate_3.setText(licensePlate_3.getText().toString());
+                                break;
+                            case "data4_":
+                                textView_Record_route_4.setText(route4.getText().toString());
+                                textView_Record_licensePlate_4.setText(licensePlate_4.getText().toString());
+                                break;
+                        }
+                        if (surveyType_1.isChecked()) {
                             String sdcard0Path = Environment.getExternalStorageDirectory().getPath();
-                            String fileDir= sdcard0Path + "/UMTEC/";
+                            String fileDir = sdcard0Path + "/UMTEC/";
                             boolean wasSuccessful = false;
 
                             Calendar calendar = Calendar.getInstance();
-                            String yearStr = calendar.get(Calendar.YEAR)+"";//获取年份
+                            String yearStr = calendar.get(Calendar.YEAR) + "";//获取年份
                             int month = calendar.get(Calendar.MONTH) + 1;//获取月份
                             String monthStr = month < 10 ? "0" + month : month + "";
                             int day = calendar.get(Calendar.DATE);//获取日
                             String dayStr = day < 10 ? "0" + day : day + "";
 
-                            File file=new File(fileDir);
-                            if(!file.exists()){
+                            File file = new File(fileDir);
+                            if (!file.exists()) {
                                 wasSuccessful = file.mkdir();  //Create New folder
                             }
 
                             sdcard0Path = Environment.getExternalStorageDirectory().getPath();
-                            fileDir= sdcard0Path + "/UMTEC/BusWaitingTime/";
+                            fileDir = sdcard0Path + "/UMTEC/BusWaitingTime/";
 
-                            file=new File(fileDir);
-                            if(!file.exists()){
+                            file = new File(fileDir);
+                            if (!file.exists()) {
                                 wasSuccessful = file.mkdir();  //Create New folder
                             }
 
                             sdcard0Path = Environment.getExternalStorageDirectory().getPath();
-                            fileDir= sdcard0Path + "/UMTEC/BusWaitingTime/"+ yearStr +"/";
+                            fileDir = sdcard0Path + "/UMTEC/BusWaitingTime/" + yearStr + "/";
 
-                            file=new File(fileDir);
-                            if(!file.exists()){
+                            file = new File(fileDir);
+                            if (!file.exists()) {
                                 wasSuccessful = file.mkdir();  //Create New folder
                             }
 
                             sdcard0Path = Environment.getExternalStorageDirectory().getPath();
-                            fileDir= sdcard0Path + "/UMTEC/BusWaitingTime/"+yearStr +"/" + yearStr + monthStr  +"/";
+                            fileDir = sdcard0Path + "/UMTEC/BusWaitingTime/" + yearStr + "/" + yearStr + monthStr + "/";
 
-                            file=new File(fileDir);
-                            if(!file.exists()){
+                            file = new File(fileDir);
+                            if (!file.exists()) {
                                 wasSuccessful = file.mkdir();  //Create New folder
                             }
 
-                            String fileName = surveyorNo.getText().toString() + "-" + yearStr + monthStr + dayStr+ ".txt";
+                            String fileName = surveyorNo.getText().toString() + "-" + yearStr + monthStr + dayStr + ".txt";
                             sdcard0Path = Environment.getExternalStorageDirectory().getPath();
-                            fileDir= sdcard0Path + "/UMTEC/BusWaitingTime/"+yearStr +"/" + yearStr + monthStr  +"/";
+                            fileDir = sdcard0Path + "/UMTEC/BusWaitingTime/" + yearStr + "/" + yearStr + monthStr + "/";
                             String filePath = fileDir + fileName;
 
                             file = new File(fileDir);
@@ -559,25 +854,26 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                 wasSuccessful = file.mkdir();  //Create New folder
                             }
 
-                            if (!wasSuccessful){
-                                Toast.makeText(MainActivity.this,"成功建立檔案", Toast.LENGTH_SHORT).show();
+                            if (!wasSuccessful) {
+                                Toast.makeText(MainActivity.this, "成功建立檔案", Toast.LENGTH_SHORT).show();
                             }
+
 //                          <--------------------------------------------------------------
                             String checkingBusStop = String.valueOf(location.getText());
-                            if (station.locationNeedCopy.contains(checkingBusStop)){
-                                String fileName_copy = surveyorNo.getText().toString() + "-" + yearStr + monthStr + dayStr+ "-copyFromNormal" + ".txt";
+                            if (station.locationNeedCopy.contains(checkingBusStop)) {
+                                String fileName_copy = surveyorNo.getText().toString() + "-" + yearStr + monthStr + dayStr + "-copyFromNormal" + ".txt";
                                 String sdcard0Path_copy = Environment.getExternalStorageDirectory().getPath();
                                 String fileDir_copy = sdcard0Path_copy + "/UMTEC/BusWaitingTime(specialRoute)/" + yearStr + "/" + yearStr + monthStr + "/";
                                 String filePath_copy = fileDir_copy + fileName_copy;
 
                                 File file_copy = new File(fileDir_copy);
-                                if (!file_copy.exists()){
+                                if (!file_copy.exists()) {
                                     wasSuccessful = file_copy.mkdir();
                                 }
 
-                            if (!wasSuccessful) {
-                                Toast.makeText(MainActivity.this,"成功建立檔案", Toast.LENGTH_SHORT).show();
-                            }
+                                if (!wasSuccessful) {
+                                    Toast.makeText(MainActivity.this, "成功建立檔案", Toast.LENGTH_SHORT).show();
+                                }
 
                                 try {
 
@@ -593,9 +889,9 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                     fOut.write(String.valueOf(lat).getBytes());
                                     fOut.write("-".getBytes());
 
-                                    switch(number){
+                                    switch (number) {
                                         case 1:
-                                            switch (genderGroup_1.getCheckedRadioButtonId()){
+                                            switch (genderGroup_1.getCheckedRadioButtonId()) {
                                                 case R.id.genderM_1:
                                                     fOut.write("M-".getBytes());
                                                     break;
@@ -604,7 +900,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                                     break;
                                             }
 
-                                            switch(ageGroup_1.getCheckedRadioButtonId()){
+                                            switch (ageGroup_1.getCheckedRadioButtonId()) {
                                                 case R.id.under20_1:
                                                     fOut.write("A-".getBytes());
                                                     break;
@@ -632,7 +928,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                             textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
                                             break;
                                         case 2:
-                                            switch (genderGroup_2.getCheckedRadioButtonId()){
+                                            switch (genderGroup_2.getCheckedRadioButtonId()) {
                                                 case R.id.genderM_2:
                                                     fOut.write("M-".getBytes());
                                                     break;
@@ -641,7 +937,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                                     break;
                                             }
 
-                                            switch(ageGroup_2.getCheckedRadioButtonId()){
+                                            switch (ageGroup_2.getCheckedRadioButtonId()) {
                                                 case R.id.under20_2:
                                                     fOut.write("A-".getBytes());
                                                     break;
@@ -669,7 +965,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                             textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
                                             break;
                                         case 3:
-                                            switch (genderGroup_3.getCheckedRadioButtonId()){
+                                            switch (genderGroup_3.getCheckedRadioButtonId()) {
                                                 case R.id.genderM_3:
                                                     fOut.write("M-".getBytes());
                                                     break;
@@ -678,7 +974,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                                     break;
                                             }
 
-                                            switch(ageGroup_3.getCheckedRadioButtonId()){
+                                            switch (ageGroup_3.getCheckedRadioButtonId()) {
                                                 case R.id.under20_3:
                                                     fOut.write("A-".getBytes());
                                                     break;
@@ -705,9 +1001,45 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                             textView1.setTextColor(getResources().getColor(R.color.colorPrimary));
                                             textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
                                             break;
+                                        case 4:
+                                            switch (genderGroup_4.getCheckedRadioButtonId()) {
+                                                case R.id.genderM_4:
+                                                    fOut.write("M-".getBytes());
+                                                    break;
+                                                case R.id.genderF_4:
+                                                    fOut.write("F-".getBytes());
+                                                    break;
+                                            }
+
+                                            switch (ageGroup_4.getCheckedRadioButtonId()) {
+                                                case R.id.under20_4:
+                                                    fOut.write("A-".getBytes());
+                                                    break;
+                                                case R.id.from20to45_4:
+                                                    fOut.write("B-".getBytes());
+                                                    break;
+                                                case R.id.above45_4:
+                                                    fOut.write("C-".getBytes());
+                                                    break;
+                                            }
+                                            fOut.write(route.getBytes());
+                                            fOut.write("-".getBytes());
+                                            fOut.write(licensePlate_4.getText().toString().getBytes());
+                                            fOut.write("-".getBytes());
+                                            fOut.write(startTime.getBytes());
+                                            fOut.write("-".getBytes());
+                                            fOut.write(endTime.getBytes());
+
+                                            startTime_4.setText("");
+                                            endTime_4.setText("");
+                                            route3.setText("");
+                                            licensePlate_4.setText("");
+                                            textView1.setTextColor(getResources().getColor(R.color.colorPrimary));
+                                            textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
+
                                     }
                                     fOut.write("\r\n".getBytes());
-                                    Toast.makeText(MainActivity.this, "已儲存。",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(MainActivity.this, "已儲存。", Toast.LENGTH_SHORT).show();
 
 
                                 } catch (Exception e) {
@@ -724,6 +1056,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                 location();
 
                                 FileOutputStream fOut = new FileOutputStream(filePath, true);
+
                                 fOut.write(surveyorNo.getText().toString().getBytes());
                                 fOut.write("-".getBytes());
                                 fOut.write(location.getText().toString().getBytes());
@@ -732,10 +1065,9 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                 fOut.write("-".getBytes());
                                 fOut.write(String.valueOf(lat).getBytes());
                                 fOut.write("-".getBytes());
-
-                                switch(number){
+                                switch (number) {
                                     case 1:
-                                        switch (genderGroup_1.getCheckedRadioButtonId()){
+                                        switch (genderGroup_1.getCheckedRadioButtonId()) {
                                             case R.id.genderM_1:
                                                 fOut.write("M-".getBytes());
                                                 break;
@@ -744,7 +1076,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                                 break;
                                         }
 
-                                        switch(ageGroup_1.getCheckedRadioButtonId()){
+                                        switch (ageGroup_1.getCheckedRadioButtonId()) {
                                             case R.id.under20_1:
                                                 fOut.write("A-".getBytes());
                                                 break;
@@ -772,7 +1104,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                         textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
                                         break;
                                     case 2:
-                                        switch (genderGroup_2.getCheckedRadioButtonId()){
+                                        switch (genderGroup_2.getCheckedRadioButtonId()) {
                                             case R.id.genderM_2:
                                                 fOut.write("M-".getBytes());
                                                 break;
@@ -781,7 +1113,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                                 break;
                                         }
 
-                                        switch(ageGroup_2.getCheckedRadioButtonId()){
+                                        switch (ageGroup_2.getCheckedRadioButtonId()) {
                                             case R.id.under20_2:
                                                 fOut.write("A-".getBytes());
                                                 break;
@@ -809,7 +1141,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                         textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
                                         break;
                                     case 3:
-                                        switch (genderGroup_3.getCheckedRadioButtonId()){
+                                        switch (genderGroup_3.getCheckedRadioButtonId()) {
                                             case R.id.genderM_3:
                                                 fOut.write("M-".getBytes());
                                                 break;
@@ -818,7 +1150,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                                 break;
                                         }
 
-                                        switch(ageGroup_3.getCheckedRadioButtonId()){
+                                        switch (ageGroup_3.getCheckedRadioButtonId()) {
                                             case R.id.under20_3:
                                                 fOut.write("A-".getBytes());
                                                 break;
@@ -845,62 +1177,99 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                         textView1.setTextColor(getResources().getColor(R.color.colorPrimary));
                                         textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
                                         break;
+                                    case 4:
+                                        switch (genderGroup_4.getCheckedRadioButtonId()) {
+                                            case R.id.genderM_4:
+                                                fOut.write("M-".getBytes());
+                                                break;
+                                            case R.id.genderF_4:
+                                                fOut.write("F-".getBytes());
+                                                break;
+                                        }
+
+                                        switch (ageGroup_4.getCheckedRadioButtonId()) {
+                                            case R.id.under20_4:
+                                                fOut.write("A-".getBytes());
+                                                break;
+                                            case R.id.from20to45_4:
+                                                fOut.write("B-".getBytes());
+                                                break;
+                                            case R.id.above45_4:
+                                                fOut.write("C-".getBytes());
+                                                break;
+                                        }
+
+                                        fOut.write(route.getBytes());
+                                        fOut.write("-".getBytes());
+                                        fOut.write(licensePlate_4.getText().toString().getBytes());
+                                        fOut.write("-".getBytes());
+                                        fOut.write(startTime.getBytes());
+                                        fOut.write("-".getBytes());
+                                        fOut.write(endTime.getBytes());
+
+                                        startTime_4.setText("");
+                                        endTime_4.setText("");
+                                        route4.setText("");
+                                        licensePlate_4.setText("");
+                                        textView1.setTextColor(getResources().getColor(R.color.colorPrimary));
+                                        textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
+                                        break;
                                 }
                                 fOut.write("\r\n".getBytes());
-                                Toast.makeText(MainActivity.this, "已儲存。",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, "已儲存。", Toast.LENGTH_SHORT).show();
 
 
                             } catch (Exception e) {
-                                Log.d("Ch7_4_InternalStorage", "例外發生: " + e.toString());
+                                Log.d("Ch_4_InternalStorage", "例外發生: " + e.toString());
                                 Toast.makeText(MainActivity.this, "Fail!!! Please Contact Developer", Toast.LENGTH_SHORT).show();
                             }
                         }
 
-                        if(surveyType_2.isChecked()){
+                        if (surveyType_2.isChecked()) {
                             String sdcard0Path = Environment.getExternalStorageDirectory().getPath();
-                            String fileDir= sdcard0Path + "/UMTEC/";
+                            String fileDir = sdcard0Path + "/UMTEC/";
                             boolean wasSuccessful = false;
 
                             Calendar calendar = Calendar.getInstance();
-                            String yearStr = calendar.get(Calendar.YEAR)+"";//获取年份
+                            String yearStr = calendar.get(Calendar.YEAR) + "";//获取年份
                             int month = calendar.get(Calendar.MONTH) + 1;//获取月份
                             String monthStr = month < 10 ? "0" + month : month + "";
                             int day = calendar.get(Calendar.DATE);//获取日
                             String dayStr = day < 10 ? "0" + day : day + "";
 
-                            File file=new File(fileDir);
-                            if(!file.exists()){
+                            File file = new File(fileDir);
+                            if (!file.exists()) {
                                 wasSuccessful = file.mkdir();  //Create New folder
                             }
 
                             sdcard0Path = Environment.getExternalStorageDirectory().getPath();
-                            fileDir= sdcard0Path + "/UMTEC/BusWaitingTime(specialRoute)/";
+                            fileDir = sdcard0Path + "/UMTEC/BusWaitingTime(specialRoute)/";
 
-                            file=new File(fileDir);
-                            if(!file.exists()){
+                            file = new File(fileDir);
+                            if (!file.exists()) {
                                 wasSuccessful = file.mkdir();  //Create New folder
                             }
 
                             sdcard0Path = Environment.getExternalStorageDirectory().getPath();
-                            fileDir= sdcard0Path + "/UMTEC/BusWaitingTime(specialRoute)/"+ yearStr +"/";
+                            fileDir = sdcard0Path + "/UMTEC/BusWaitingTime(specialRoute)/" + yearStr + "/";
 
-                            file=new File(fileDir);
-                            if(!file.exists()){
+                            file = new File(fileDir);
+                            if (!file.exists()) {
                                 wasSuccessful = file.mkdir();  //Create New folder
                             }
 
                             sdcard0Path = Environment.getExternalStorageDirectory().getPath();
-                            fileDir= sdcard0Path + "/UMTEC/BusWaitingTime(specialRoute)/"+yearStr +"/" + yearStr + monthStr  +"/";
+                            fileDir = sdcard0Path + "/UMTEC/BusWaitingTime(specialRoute)/" + yearStr + "/" + yearStr + monthStr + "/";
 
-                            file=new File(fileDir);
-                            if(!file.exists()){
+                            file = new File(fileDir);
+                            if (!file.exists()) {
                                 wasSuccessful = file.mkdir();  //Create New folder
                             }
 
 
-                            String fileName = surveyorNo.getText().toString() + "-" + yearStr + monthStr + dayStr+ ".txt";
+                            String fileName = surveyorNo.getText().toString() + "-" + yearStr + monthStr + dayStr + ".txt";
                             sdcard0Path = Environment.getExternalStorageDirectory().getPath();
-                            fileDir= sdcard0Path + "/UMTEC/BusWaitingTime(specialRoute)/"+yearStr +"/" + yearStr + monthStr  +"/";
+                            fileDir = sdcard0Path + "/UMTEC/BusWaitingTime(specialRoute)/" + yearStr + "/" + yearStr + monthStr + "/";
                             String filePath = fileDir + fileName;
 
                             file = new File(fileDir);
@@ -908,8 +1277,8 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                 wasSuccessful = file.mkdir();  //Create New folder
                             }
 
-                            if (!wasSuccessful){
-                                Toast.makeText(MainActivity.this,"成功建立檔案", Toast.LENGTH_SHORT).show();
+                            if (!wasSuccessful) {
+                                Toast.makeText(MainActivity.this, "成功建立檔案", Toast.LENGTH_SHORT).show();
                             }
 
                             Log.d("pathTest: ", String.valueOf(file.exists()));
@@ -929,9 +1298,9 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                 fOut.write(String.valueOf(lat).getBytes());
                                 fOut.write("-".getBytes());
 
-                                switch(number){
+                                switch (number) {
                                     case 1:
-                                        switch (genderGroup_1.getCheckedRadioButtonId()){
+                                        switch (genderGroup_1.getCheckedRadioButtonId()) {
                                             case R.id.genderM_1:
                                                 fOut.write("M-".getBytes());
                                                 break;
@@ -940,7 +1309,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                                 break;
                                         }
 
-                                        switch(ageGroup_1.getCheckedRadioButtonId()){
+                                        switch (ageGroup_1.getCheckedRadioButtonId()) {
                                             case R.id.under20_1:
                                                 fOut.write("A-".getBytes());
                                                 break;
@@ -968,7 +1337,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                         textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
                                         break;
                                     case 2:
-                                        switch (genderGroup_2.getCheckedRadioButtonId()){
+                                        switch (genderGroup_2.getCheckedRadioButtonId()) {
                                             case R.id.genderM_2:
                                                 fOut.write("M-".getBytes());
                                                 break;
@@ -977,7 +1346,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                                 break;
                                         }
 
-                                        switch(ageGroup_2.getCheckedRadioButtonId()){
+                                        switch (ageGroup_2.getCheckedRadioButtonId()) {
                                             case R.id.under20_2:
                                                 fOut.write("A-".getBytes());
                                                 break;
@@ -1005,7 +1374,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                         textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
                                         break;
                                     case 3:
-                                        switch (genderGroup_3.getCheckedRadioButtonId()){
+                                        switch (genderGroup_3.getCheckedRadioButtonId()) {
                                             case R.id.genderM_3:
                                                 fOut.write("M-".getBytes());
                                                 break;
@@ -1014,7 +1383,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                                 break;
                                         }
 
-                                        switch(ageGroup_3.getCheckedRadioButtonId()){
+                                        switch (ageGroup_3.getCheckedRadioButtonId()) {
                                             case R.id.under20_3:
                                                 fOut.write("A-".getBytes());
                                                 break;
@@ -1041,9 +1410,46 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                         textView1.setTextColor(getResources().getColor(R.color.colorPrimary));
                                         textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
                                         break;
+                                    case 4:
+                                        switch (genderGroup_4.getCheckedRadioButtonId()) {
+                                            case R.id.genderM_4:
+                                                fOut.write("M-".getBytes());
+                                                break;
+                                            case R.id.genderF_4:
+                                                fOut.write("F-".getBytes());
+                                                break;
+                                        }
+
+                                        switch (ageGroup_4.getCheckedRadioButtonId()) {
+                                            case R.id.under20_4:
+                                                fOut.write("A-".getBytes());
+                                                break;
+                                            case R.id.from20to45_4:
+                                                fOut.write("B-".getBytes());
+                                                break;
+                                            case R.id.above45_4:
+                                                fOut.write("C-".getBytes());
+                                                break;
+                                        }
+
+                                        fOut.write(route.getBytes());
+                                        fOut.write("-".getBytes());
+                                        fOut.write(licensePlate_4.getText().toString().getBytes());
+                                        fOut.write("-".getBytes());
+                                        fOut.write(startTime.getBytes());
+                                        fOut.write("-".getBytes());
+                                        fOut.write(endTime.getBytes());
+
+                                        startTime_4.setText("");
+                                        endTime_4.setText("");
+                                        route4.setText("");
+                                        licensePlate_4.setText("");
+                                        textView1.setTextColor(getResources().getColor(R.color.colorPrimary));
+                                        textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
+                                        break;
                                 }
                                 fOut.write("\r\n".getBytes());
-                                Toast.makeText(MainActivity.this, "已儲存。",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, "已儲存。", Toast.LENGTH_SHORT).show();
 
 
                             } catch (Exception e) {
@@ -1052,51 +1458,51 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                             }
                         }
 
-                        if(surveyType_3.isChecked()){
+                        if (surveyType_3.isChecked()) {
                             String sdcard0Path = Environment.getExternalStorageDirectory().getPath();
-                            String fileDir= sdcard0Path + "/UMTEC/";
+                            String fileDir = sdcard0Path + "/UMTEC/";
                             boolean wasSuccessful = false;
 
                             Calendar calendar = Calendar.getInstance();
-                            String yearStr = calendar.get(Calendar.YEAR)+"";//获取年份
+                            String yearStr = calendar.get(Calendar.YEAR) + "";//获取年份
                             int month = calendar.get(Calendar.MONTH) + 1;//获取月份
                             String monthStr = month < 10 ? "0" + month : month + "";
                             int day = calendar.get(Calendar.DATE);//获取日
                             String dayStr = day < 10 ? "0" + day : day + "";
 
-                            File file=new File(fileDir);
-                            if(!file.exists()){
+                            File file = new File(fileDir);
+                            if (!file.exists()) {
                                 wasSuccessful = file.mkdir();  //Create New folder
                             }
 
                             sdcard0Path = Environment.getExternalStorageDirectory().getPath();
-                            fileDir= sdcard0Path + "/UMTEC/BusWaitingTime(hengqin)/";
+                            fileDir = sdcard0Path + "/UMTEC/BusWaitingTime(hengqin)/";
 
-                            file=new File(fileDir);
-                            if(!file.exists()){
+                            file = new File(fileDir);
+                            if (!file.exists()) {
                                 wasSuccessful = file.mkdir();  //Create New folder
                             }
 
                             sdcard0Path = Environment.getExternalStorageDirectory().getPath();
-                            fileDir= sdcard0Path + "/UMTEC/BusWaitingTime(hengqin)/"+ yearStr +"/";
+                            fileDir = sdcard0Path + "/UMTEC/BusWaitingTime(hengqin)/" + yearStr + "/";
 
-                            file=new File(fileDir);
-                            if(!file.exists()){
+                            file = new File(fileDir);
+                            if (!file.exists()) {
                                 wasSuccessful = file.mkdir();  //Create New folder
                             }
 
                             sdcard0Path = Environment.getExternalStorageDirectory().getPath();
-                            fileDir= sdcard0Path + "/UMTEC/BusWaitingTime(hengqin)/"+yearStr +"/" + yearStr + monthStr  +"/";
+                            fileDir = sdcard0Path + "/UMTEC/BusWaitingTime(hengqin)/" + yearStr + "/" + yearStr + monthStr + "/";
 
-                            file=new File(fileDir);
-                            if(!file.exists()){
+                            file = new File(fileDir);
+                            if (!file.exists()) {
                                 wasSuccessful = file.mkdir();  //Create New folder
                             }
 
 
-                            String fileName = surveyorNo.getText().toString() + "-" + yearStr + monthStr + dayStr+ ".txt";
+                            String fileName = surveyorNo.getText().toString() + "-" + yearStr + monthStr + dayStr + ".txt";
                             sdcard0Path = Environment.getExternalStorageDirectory().getPath();
-                            fileDir= sdcard0Path + "/UMTEC/BusWaitingTime(hengqin)/"+yearStr +"/" + yearStr + monthStr  +"/";
+                            fileDir = sdcard0Path + "/UMTEC/BusWaitingTime(hengqin)/" + yearStr + "/" + yearStr + monthStr + "/";
                             String filePath = fileDir + fileName;
 
                             file = new File(fileDir);
@@ -1104,8 +1510,8 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                 wasSuccessful = file.mkdir();  //Create New folder
                             }
 
-                            if (!wasSuccessful){
-                                Toast.makeText(MainActivity.this,"成功建立檔案", Toast.LENGTH_SHORT).show();
+                            if (!wasSuccessful) {
+                                Toast.makeText(MainActivity.this, "成功建立檔案", Toast.LENGTH_SHORT).show();
                             }
 
                             try {
@@ -1123,9 +1529,9 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                 fOut.write(String.valueOf(lat).getBytes());
                                 fOut.write("-".getBytes());
 
-                                switch(number){
+                                switch (number) {
                                     case 1:
-                                        switch (genderGroup_1.getCheckedRadioButtonId()){
+                                        switch (genderGroup_1.getCheckedRadioButtonId()) {
                                             case R.id.genderM_1:
                                                 fOut.write("M-".getBytes());
                                                 break;
@@ -1134,7 +1540,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                                 break;
                                         }
 
-                                        switch(ageGroup_1.getCheckedRadioButtonId()){
+                                        switch (ageGroup_1.getCheckedRadioButtonId()) {
                                             case R.id.under20_1:
                                                 fOut.write("A-".getBytes());
                                                 break;
@@ -1162,7 +1568,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                         textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
                                         break;
                                     case 2:
-                                        switch (genderGroup_2.getCheckedRadioButtonId()){
+                                        switch (genderGroup_2.getCheckedRadioButtonId()) {
                                             case R.id.genderM_2:
                                                 fOut.write("M-".getBytes());
                                                 break;
@@ -1171,7 +1577,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                                 break;
                                         }
 
-                                        switch(ageGroup_2.getCheckedRadioButtonId()){
+                                        switch (ageGroup_2.getCheckedRadioButtonId()) {
                                             case R.id.under20_2:
                                                 fOut.write("A-".getBytes());
                                                 break;
@@ -1199,7 +1605,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                         textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
                                         break;
                                     case 3:
-                                        switch (genderGroup_3.getCheckedRadioButtonId()){
+                                        switch (genderGroup_3.getCheckedRadioButtonId()) {
                                             case R.id.genderM_3:
                                                 fOut.write("M-".getBytes());
                                                 break;
@@ -1208,7 +1614,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                                 break;
                                         }
 
-                                        switch(ageGroup_3.getCheckedRadioButtonId()){
+                                        switch (ageGroup_3.getCheckedRadioButtonId()) {
                                             case R.id.under20_3:
                                                 fOut.write("A-".getBytes());
                                                 break;
@@ -1235,9 +1641,46 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                         textView1.setTextColor(getResources().getColor(R.color.colorPrimary));
                                         textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
                                         break;
+                                    case 4:
+                                        switch (genderGroup_4.getCheckedRadioButtonId()) {
+                                            case R.id.genderM_4:
+                                                fOut.write("M-".getBytes());
+                                                break;
+                                            case R.id.genderF_4:
+                                                fOut.write("F-".getBytes());
+                                                break;
+                                        }
+
+                                        switch (ageGroup_4.getCheckedRadioButtonId()) {
+                                            case R.id.under20_4:
+                                                fOut.write("A-".getBytes());
+                                                break;
+                                            case R.id.from20to45_4:
+                                                fOut.write("B-".getBytes());
+                                                break;
+                                            case R.id.above45_4:
+                                                fOut.write("C-".getBytes());
+                                                break;
+                                        }
+
+                                        fOut.write(route.getBytes());
+                                        fOut.write("-".getBytes());
+                                        fOut.write(licensePlate_4.getText().toString().getBytes());
+                                        fOut.write("-".getBytes());
+                                        fOut.write(startTime.getBytes());
+                                        fOut.write("-".getBytes());
+                                        fOut.write(endTime.getBytes());
+
+                                        startTime_4.setText("");
+                                        endTime_4.setText("");
+//                                        route3.setText("");
+                                        licensePlate_3.setText("");
+                                        textView1.setTextColor(getResources().getColor(R.color.colorPrimary));
+                                        textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
+                                        break;
                                 }
                                 fOut.write("\r\n".getBytes());
-                                Toast.makeText(MainActivity.this, "已儲存。",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, "已儲存。", Toast.LENGTH_SHORT).show();
 
 
                             } catch (Exception e) {
@@ -1252,46 +1695,71 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         }
     }
 
-    public void FindView(){
+    public void FindView() {
+//        scrollView = findViewById(R.id.scrollView);
+//        circleButton = findViewById(R.id.circleButtonOne);
         surveyorNo = getView(R.id.surveyorNo);
         location = getView(R.id.location);
         route1 = getView(R.id.route1);
         route2 = getView(R.id.route2);
         route3 = getView(R.id.route3);
+        route4 = getView(R.id.route4);
+
         startTime_1 = getView(R.id.startTime_1);
         startTime_2 = getView(R.id.startTime_2);
         startTime_3 = getView(R.id.startTime_3);
+        startTime_4 = getView(R.id.startTime_4);
+
         endTime_1 = getView(R.id.endTime_1);
         endTime_2 = getView(R.id.endTime_2);
         endTime_3 = getView(R.id.endTime_3);
-        licensePlate_1=getView(R.id.licensePlate_1);
-        licensePlate_2=getView(R.id.licensePlate_2);
-        licensePlate_3=getView(R.id.licensePlate_3);
+        endTime_4 = getView(R.id.endTime_4);
+
+        licensePlate_1 = getView(R.id.licensePlate_1);
+        licensePlate_2 = getView(R.id.licensePlate_2);
+        licensePlate_3 = getView(R.id.licensePlate_3);
+        licensePlate_4 = getView(R.id.licensePlate_4);
+
         startButton_1 = getView(R.id.startButton_1);
         startButton_2 = getView(R.id.startButton_2);
         startButton_3 = getView(R.id.startButton_3);
+        startButton_4 = getView(R.id.startButton_4);
+
         endButton_1 = getView(R.id.endButton_1);
         endButton_2 = getView(R.id.endButton_2);
         endButton_3 = getView(R.id.endButton_3);
+        endButton_4 = getView(R.id.endButton_4);
+
         saveButton_1 = getView(R.id.saveButton_1);
         saveButton_2 = getView(R.id.saveButton_2);
         saveButton_3 = getView(R.id.saveButton_3);
+        saveButton_4 = getView(R.id.saveButton_4);
 
         genderF_1 = getView(R.id.genderF_1);
         genderF_2 = getView(R.id.genderF_2);
         genderF_3 = getView(R.id.genderF_3);
+        genderF_4 = getView(R.id.genderF_4);
+
         genderM_1 = getView(R.id.genderM_1);
         genderM_2 = getView(R.id.genderM_2);
         genderM_3 = getView(R.id.genderM_3);
+        genderM_4 = getView(R.id.genderM_4);
+
         under20_1 = getView(R.id.under20_1);
         under20_2 = getView(R.id.under20_2);
         under20_3 = getView(R.id.under20_3);
+        under20_4 = getView(R.id.under20_4);
+
         from20to45_1 = getView(R.id.from20to45_1);
         from20to45_2 = getView(R.id.from20to45_2);
         from20to45_3 = getView(R.id.from20to45_3);
+        from20to45_4 = getView(R.id.from20to45_4);
+
         above45_1 = getView(R.id.above45_1);
         above45_2 = getView(R.id.above45_2);
         above45_3 = getView(R.id.above45_3);
+        above45_4 = getView(R.id.above45_4);
+
         surveyType_1 = getView(R.id.normal_rd);
         surveyType_2 = getView(R.id.S101x_rb);
         surveyType_3 = getView(R.id.hengqin_rb);
@@ -1301,53 +1769,127 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         genderGroup_1 = getView(R.id.genderGroup_1);
         genderGroup_2 = getView(R.id.genderGroup_2);
         genderGroup_3 = getView(R.id.genderGroup_3);
+        genderGroup_4 = getView(R.id.genderGroup_4);
 
         ageGroup_1 = getView(R.id.ageGroup_1);
         ageGroup_2 = getView(R.id.ageGroup_2);
         ageGroup_3 = getView(R.id.ageGroup_3);
+        ageGroup_4 = getView(R.id.ageGroup_4);
 
         textView1 = getView(R.id.textView1);
         textView2 = getView(R.id.textView2);
-        textView15 = getView(R.id.textView15);
-        textView16 = getView(R.id.textView16);
-        textView17 = getView(R.id.textView17);
+
+        Group1TextView3 = getView(R.id.Group1TextView3);
+        Group2TextView3 = getView(R.id.Group2TextView3);
+        Group3TextView3 = getView(R.id.Group3TextView3);
+        Group4TextView3 = getView(R.id.Group4TextView3);
 
         spinner1 = getView(R.id.spinner1);
         spinner2 = getView(R.id.spinner2);
         spinner3 = getView(R.id.spinner3);
+        spinner4 = getView(R.id.spinner4);
+
+        textView_Record_licensePlate_1 = getView(R.id.textView_Record_licensePlate_1);
+        textView_Record_licensePlate_2 = getView(R.id.textView_Record_licensePlate_2);
+        textView_Record_licensePlate_3 = getView(R.id.textView_Record_licensePlate_3);
+        textView_Record_licensePlate_4 = getView(R.id.textView_Record_licensePlate_4);
+        textView_Record_route_1 = getView(R.id.textView_Record_route_1);
+        textView_Record_route_2 = getView(R.id.textView_Record_route_2);
+        textView_Record_route_3 = getView(R.id.textView_Record_route_3);
+        textView_Record_route_4 = getView(R.id.textView_Record_route_4);
 
         stationButton = getView(R.id.stationButton);
+        constraint = getView(R.id.constraint);
+//        overlay = getView(R.id.overlay);
+//        centerButton_1 = getView(R.id.centerButton_1);
+        Group1recordButton_1 = getView(R.id.Group1recordButton_1);
+        Group1recordButton_2 = getView(R.id.Group1recordButton_2);
+        Group1recordButton_3 = getView(R.id.Group1recordButton_3);
+        Group1recordButton_4 = getView(R.id.Group1recordButton_4);
     }
 
-    public void location(){
-        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        provider = locationManager.getProvider(LocationManager.GPS_PROVIDER).getName();
+    //    public void location() {
+//        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+//        provider = locationManager.getProvider(LocationManager.GPS_PROVIDER).getName();
+//        if (provider != null && !provider.equals("")) {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+//                        || checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+//                }
+//            }
+//            Location location = locationManager.getLastKnownLocation(provider);
+//
+//            LocationListener locationListener = new LocationListener() {
+//                public void onLocationChanged(Location location) {
+//                }
+//
+//                public void onStatusChanged(String provider, int status, Bundle extras) {
+//                }
+//
+//                public void onProviderEnabled(String provider) {
+//                }
+//
+//                public void onProviderDisabled(String provider) {
+//                }
+//            };
+//
+//            locationManager.requestLocationUpdates(provider, 0, 0, locationListener);
+//
+//            if (location != null){
+//                onLocationChanged(location);
+//
+//            }
+//            else {
+//                Toast.makeText(getBaseContext(), "Location can't be retrieved", Toast.LENGTH_SHORT).show();
+//            }
+//        } else {
+//            Toast.makeText(getBaseContext(), "No Provider Found", Toast.LENGTH_SHORT).show();
+//        }
+//    }
+    public void location() {
+        try {
+            locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
-        if (provider != null && !provider.equals("")) {
+            String providerName;
+            assert locationManager != null;
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                providerName = LocationManager.GPS_PROVIDER;
+            } else if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                providerName = LocationManager.NETWORK_PROVIDER;
+            } else {
+                Toast.makeText(getBaseContext(), "No location provider available", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                        || checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                if (checkSelfPermission(ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        && checkSelfPermission(ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, 1);
+                    return;
                 }
             }
-            Location location = locationManager.getLastKnownLocation(provider);
-
+            Location location = locationManager.getLastKnownLocation(providerName);
             LocationListener locationListener = new LocationListener() {
                 public void onLocationChanged(Location location) {
                 }
-                public void onStatusChanged(String provider, int status, Bundle extras) {}
-                public void onProviderEnabled(String provider) {}
-                public void onProviderDisabled(String provider) {}
+
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+                }
+
+                public void onProviderEnabled(String provider) {
+                }
+
+                public void onProviderDisabled(String provider) {
+                }
             };
-
-            locationManager.requestLocationUpdates(provider, 0, 0, locationListener );
-
-            if (location != null)
+            locationManager.requestLocationUpdates(providerName, 0, 0, locationListener);
+            if (location != null) {
                 onLocationChanged(location);
-            else{
+            } else {
                 Toast.makeText(getBaseContext(), "Location can't be retrieved", Toast.LENGTH_SHORT).show();
             }
-        } else {
-            Toast.makeText(getBaseContext(), "No Provider Found", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Log.e("Error", "Exception in location(): " + e.getMessage());
         }
     }
 
@@ -1368,7 +1910,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
 //    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    public void onMoveToBackground(){
+    public void onMoveToBackground() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         final AlertDialog.Builder typeBuilder = new AlertDialog.Builder(MainActivity.this);
 
@@ -1388,7 +1930,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 String selectedType = typeList[i];
                                 String[] locationListItem = new String[0];
-                                switch (selectedType){
+                                switch (selectedType) {
                                     case "普通":
                                         locationListItem = station.location;
                                         surveyType_1.setChecked(true);
@@ -1412,7 +1954,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         builder.show();
     }
 
-    class Spinner1Class implements AdapterView.OnItemSelectedListener{
+    class Spinner1Class implements AdapterView.OnItemSelectedListener {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             route1.setText(busNumArray[i]);
@@ -1424,7 +1966,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         }
     }
 
-    class Spinner2Class implements AdapterView.OnItemSelectedListener{
+    class Spinner2Class implements AdapterView.OnItemSelectedListener {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             route2.setText(busNumArray[i]);
@@ -1440,6 +1982,18 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             route3.setText(busNumArray[i]);
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    }
+
+    class Spinner4Class implements AdapterView.OnItemSelectedListener {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            route4.setText(busNumArray[i]);
         }
 
         @Override
