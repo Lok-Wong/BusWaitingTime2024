@@ -7,9 +7,9 @@
     android:id="@+id/scrollView"
     tools:context=".MainActivity"
     android:fillViewport="true">
-<!--    <FrameLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content">-->
+    <!--    <FrameLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content">-->
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraint"
         android:layout_width="match_parent"
@@ -22,9 +22,8 @@
 <!--            android:id="@+id/Group2TextViewAge"-->
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="18dp"-->
+<!--            android:layout_marginTop="10dp"-->
 <!--            android:text="年齡︰"-->
-<!--            android:visibility="gone"-->
 <!--            android:textColor="@android:color/black"-->
 <!--            android:textSize="18sp"-->
 <!--            app:layout_constraintStart_toStartOf="@+id/Group2TextView1"-->
@@ -34,7 +33,6 @@
 <!--            android:layout_width="0dp"-->
 <!--            android:layout_height="0dp"-->
 <!--            android:orientation="horizontal"-->
-<!--            android:visibility="gone"-->
 <!--            app:layout_constraintBottom_toBottomOf="@+id/Group2TextViewAge"-->
 <!--            app:layout_constraintEnd_toEndOf="parent"-->
 <!--            app:layout_constraintStart_toEndOf="@+id/Group2TextViewAge"-->
@@ -45,27 +43,27 @@
 <!--                android:layout_width="0dp"-->
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_weight="1"-->
-<!--                android:text="20歲以下" />-->
+<!--                android:text="20&lt;" />-->
 
 <!--            <RadioButton-->
 <!--                android:id="@+id/from20to45_2"-->
 <!--                android:layout_width="0dp"-->
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_weight="1"-->
-<!--                android:text="20至45歲" />-->
+<!--                android:text="20-45" />-->
 
 <!--            <RadioButton-->
 <!--                android:id="@+id/above45_2"-->
 <!--                android:layout_width="0dp"-->
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_weight="1"-->
-<!--                android:text="45歲以上" />-->
+<!--                android:text=">45" />-->
 <!--        </RadioGroup>-->
         <TextView
             android:id="@+id/Group2TextView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="18dp"
             android:layout_marginLeft="10dp"
             android:text="路線︰"
             android:textColor="@android:color/black"
@@ -94,7 +92,7 @@
             android:id="@+id/Group2TextView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="18dp"
             android:maxLength="6"
             android:text="車牌︰"
             android:textColor="@android:color/black"
@@ -110,41 +108,39 @@
             app:layout_constraintBottom_toBottomOf="@+id/Group2TextView3"
             app:layout_constraintStart_toEndOf="@+id/Group2TextView3"
             app:layout_constraintTop_toTopOf="@+id/Group2TextView3" />
-        <TextView
-            android:id="@+id/Group2TextViewTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="乘客排隊時間︰"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="@+id/Group2TextView3"
-            app:layout_constraintTop_toBottomOf="@+id/Group2TextView3" />
+<!--        <TextView-->
+<!--            android:id="@+id/Group2TextViewTime"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="18dp"-->
+<!--            android:text="乘客排隊時間︰"-->
+<!--            android:textColor="@android:color/black"-->
+<!--            android:textSize="18sp"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/Group2TextView3"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/Group2TextView3" />-->
         <Button
             android:id="@+id/startButton_2"
-            android:layout_width="140dp"
+            android:layout_width="90dp"
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:onClick="markTime"
-            android:text="Start Time"
+            android:text="S-Time:"
             android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="@+id/Group2TextViewTime"
-            app:layout_constraintTop_toBottomOf="@+id/Group2TextViewTime" />
+            app:layout_constraintStart_toStartOf="@+id/Group2TextView3"
+            app:layout_constraintTop_toBottomOf="@+id/Group2recordButton_1" />
         <Button
             android:id="@+id/endButton_2"
-            android:layout_width="140dp"
+            android:layout_width="90dp"
             android:layout_height="48dp"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:onClick="markTime"
-            android:text="End Time"
+            android:text="E-Time:"
             android:textSize="18sp"
             app:layout_constraintTop_toBottomOf="@+id/startButton_2"
-            app:layout_constraintStart_toStartOf="@+id/Group2TextViewTime" />
+            app:layout_constraintStart_toStartOf="@+id/startButton_2" />
         <EditText
             android:id="@+id/startTime_2"
             android:layout_width="180dp"
@@ -167,22 +163,21 @@
             app:layout_constraintTop_toTopOf="@+id/endButton_2" />
         <Button
             android:id="@+id/saveButton_2"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="8dp"
             android:onClick="markTime"
             android:text="Save"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/view3"
-            app:layout_constraintTop_toBottomOf="@+id/endButton_2"
-            app:layout_constraintVertical_bias="0.595" />
+            app:layout_constraintStart_toStartOf="@+id/view3"
+            app:layout_constraintTop_toBottomOf="@+id/endTime_2" />
 <!--        <TextView-->
 <!--            android:id="@+id/Group3TextView1"-->
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="20dp"-->
+<!--            android:layout_marginTop="10dp"-->
 <!--            android:text="C性別："-->
-<!--            android:visibility="gone"-->
 <!--            android:textColor="@android:color/black"-->
 <!--            android:textSize="18sp"-->
 <!--            app:layout_constraintStart_toStartOf="@+id/textView1"-->
@@ -192,7 +187,6 @@
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
 <!--            android:orientation="horizontal"-->
-<!--            android:visibility="gone"-->
 <!--            app:layout_constraintBottom_toBottomOf="@+id/Group3TextView1"-->
 <!--            app:layout_constraintStart_toEndOf="@+id/Group3TextView1"-->
 <!--            app:layout_constraintTop_toTopOf="@+id/Group3TextView1">-->
@@ -216,9 +210,8 @@
 <!--            android:id="@+id/Group3TextViewAge"-->
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="24dp"-->
+<!--            android:layout_marginTop="10dp"-->
 <!--            android:text="年齡︰"-->
-<!--            android:visibility="gone"-->
 <!--            android:textColor="@android:color/black"-->
 <!--            android:textSize="18sp"-->
 <!--            app:layout_constraintStart_toStartOf="@+id/Group3TextView1"-->
@@ -228,7 +221,6 @@
 <!--            android:layout_width="0dp"-->
 <!--            android:layout_height="0dp"-->
 <!--            android:orientation="horizontal"-->
-<!--            android:visibility="gone"-->
 <!--            app:layout_constraintBottom_toBottomOf="@+id/Group3TextViewAge"-->
 <!--            app:layout_constraintEnd_toEndOf="@+id/view3"-->
 <!--            app:layout_constraintStart_toEndOf="@+id/Group3TextViewAge"-->
@@ -239,28 +231,28 @@
 <!--                android:layout_width="0dp"-->
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_weight="1"-->
-<!--                android:text="20歲以下" />-->
+<!--                android:text="20&lt;" />-->
 
 <!--            <RadioButton-->
 <!--                android:id="@+id/from20to45_3"-->
 <!--                android:layout_width="0dp"-->
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_weight="1"-->
-<!--                android:text="20至45歲" />-->
+<!--                android:text="20-45" />-->
 
 <!--            <RadioButton-->
 <!--                android:id="@+id/above45_3"-->
 <!--                android:layout_width="0dp"-->
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_weight="1"-->
-<!--                android:text="45歲以上" />-->
+<!--                android:text=">45" />-->
 <!--        </RadioGroup>-->
 
         <TextView
             android:id="@+id/Group3TextView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="18dp"
             android:text="路線︰"
             android:textColor="@android:color/black"
             android:textSize="18sp"
@@ -288,7 +280,7 @@
             android:id="@+id/Group3TextView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="18dp"
             android:maxLength="6"
             android:text="車牌︰"
             android:textColor="@android:color/black"
@@ -304,41 +296,39 @@
             app:layout_constraintBottom_toBottomOf="@+id/Group3TextView3"
             app:layout_constraintStart_toEndOf="@+id/Group3TextView3"
             app:layout_constraintTop_toTopOf="@+id/Group3TextView3" />
-        <TextView
-            android:id="@+id/Group3TextViewTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="乘客排隊時間︰"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="@+id/Group3TextView3"
-            app:layout_constraintTop_toBottomOf="@+id/Group3TextView3" />
+<!--        <TextView-->
+<!--            android:id="@+id/Group3TextViewTime"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="18dp"-->
+<!--            android:text="乘客排隊時間︰"-->
+<!--            android:textColor="@android:color/black"-->
+<!--            android:textSize="18sp"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/Group3TextView3"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/Group3TextView3" />-->
         <Button
             android:id="@+id/startButton_3"
-            android:layout_width="140dp"
+            android:layout_width="90dp"
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:onClick="markTime"
-            android:text="Start Time"
+            android:text="S-Time:"
             android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="@+id/Group3TextViewTime"
-            app:layout_constraintTop_toBottomOf="@+id/Group3TextViewTime" />
+            app:layout_constraintStart_toStartOf="@+id/Group3TextView3"
+            app:layout_constraintTop_toBottomOf="@+id/Group3recordButton_1" />
         <Button
             android:id="@+id/endButton_3"
-            android:layout_width="140dp"
+            android:layout_width="90dp"
             android:layout_height="48dp"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:onClick="markTime"
-            android:text="End Time"
+            android:text="E-Time:"
             android:textSize="18sp"
             app:layout_constraintTop_toBottomOf="@+id/startButton_3"
-            app:layout_constraintStart_toStartOf="@+id/Group3TextViewTime" />
+            app:layout_constraintStart_toStartOf="@+id/startButton_3" />
         <EditText
             android:id="@+id/startTime_3"
             android:layout_width="180dp"
@@ -361,29 +351,30 @@
             app:layout_constraintTop_toTopOf="@+id/endButton_3" />
         <Button
             android:id="@+id/saveButton_3"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="8dp"
             android:onClick="markTime"
             android:text="Save"
             app:layout_constraintEnd_toEndOf="@id/view3"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/endButton_3"
+            app:layout_constraintTop_toBottomOf="@+id/endTime_3"
             app:layout_constraintVertical_bias="0.595" />
 
 
-<!--        <TextView-->
-<!--            android:id="@+id/Group3TextView2"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="8dp"-->
-<!--            android:layout_marginLeft="8dp"-->
-<!--            android:text="路線︰"-->
-<!--            android:textColor="@android:color/black"-->
-<!--            android:textSize="18sp"-->
-<!--            app:layout_constraintBottom_toBottomOf="@+id/Group3TextView1"-->
-<!--            app:layout_constraintStart_toEndOf="@+id/genderGroup_3"-->
-<!--            app:layout_constraintTop_toTopOf="@+id/Group3TextView1" />-->
+        <!--        <TextView-->
+        <!--            android:id="@+id/Group3TextView2"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginStart="8dp"-->
+        <!--            android:layout_marginLeft="8dp"-->
+        <!--            android:text="路線︰"-->
+        <!--            android:textColor="@android:color/black"-->
+        <!--            android:textSize="18sp"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@+id/Group3TextView1"-->
+        <!--            app:layout_constraintStart_toEndOf="@+id/genderGroup_3"-->
+        <!--            app:layout_constraintTop_toTopOf="@+id/Group3TextView1" />-->
 
         <TextView
             android:id="@+id/textView1"
@@ -485,7 +476,7 @@
             android:id="@+id/textView_Record_route_Title1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="路線1："
+            android:text="R1："
             android:layout_marginTop="8dp"
             android:textColor="@android:color/black"
             android:textSize="20sp"
@@ -495,7 +486,7 @@
             android:id="@+id/textView_Record_licensePlate_Title1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="車牌1："
+            android:text="P1："
             android:layout_marginTop="8dp"
             android:textColor="@android:color/black"
             android:textSize="20sp"
@@ -530,7 +521,7 @@
             android:id="@+id/textView_Record_route_Title2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="路線2："
+            android:text="R2："
             android:layout_marginTop="8dp"
             android:textColor="@android:color/black"
             android:textSize="20sp"
@@ -540,7 +531,7 @@
             android:id="@+id/textView_Record_licensePlate_Title2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="車牌2："
+            android:text="P2："
             android:layout_marginTop="8dp"
             android:textColor="@android:color/black"
             android:textSize="20sp"
@@ -574,7 +565,7 @@
             android:id="@+id/textView_Record_route_Title3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="路線3："
+            android:text="R3："
             android:layout_marginTop="8dp"
             android:textColor="@android:color/black"
             android:textSize="20sp"
@@ -584,7 +575,7 @@
             android:id="@+id/textView_Record_licensePlate_Title3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="車牌3："
+            android:text="P3："
             android:layout_marginTop="8dp"
             android:textColor="@android:color/black"
             android:textSize="20sp"
@@ -618,7 +609,7 @@
             android:id="@+id/textView_Record_route_Title4"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="路線4："
+            android:text="R4："
             android:layout_marginTop="8dp"
             android:textColor="@android:color/black"
             android:textSize="20sp"
@@ -628,7 +619,7 @@
             android:id="@+id/textView_Record_licensePlate_Title4"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="車牌4："
+            android:text="P4："
             android:layout_marginTop="8dp"
             android:textColor="@android:color/black"
             android:textSize="20sp"
@@ -660,113 +651,113 @@
             app:layout_constraintStart_toEndOf="@+id/textView_Record_licensePlate_Title4" />
         <Button
             android:id="@+id/cleanRecordButton"
-            android:layout_width="150dp"
+            android:layout_width="80dp"
             android:layout_height="50dp"
-            android:layout_marginTop="8dp"
             android:onClick="cleanRecord"
-            android:text="清空所有數據"
+            android:text="清空"
             android:textSize="18sp"
-            app:layout_constraintTop_toBottomOf="@+id/textView_Record_licensePlate_Title1"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/stationButton"
             app:layout_constraintEnd_toEndOf="parent" />
-<!--        <Button-->
-<!--            android:id="@+id/centerButton_1"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="48dp"-->
-<!--            android:layout_marginStart="8dp"-->
-<!--            android:layout_marginLeft="8dp"-->
-<!--            android:layout_marginEnd="8dp"-->
-<!--            android:layout_marginRight="8dp"-->
-<!--            android:onClick="loadRecord"-->
-<!--            android:text="記錄2"-->
-<!--            android:textSize="18sp"-->
-<!--            app:layout_constraintBottom_toBottomOf="@+id/licensePlate_1"-->
-<!--            app:layout_constraintStart_toEndOf="@+id/licensePlate_1"-->
-<!--            app:layout_constraintTop_toTopOf="@+id/licensePlate_1" />-->
-<!--        <Button-->
-<!--            android:id="@+id/centerButton_1"-->
-<!--            android:layout_width="116dp"-->
-<!--            android:layout_height="48dp"-->
-<!--            android:layout_marginStart="8dp"-->
-<!--            android:layout_marginLeft="8dp"-->
-<!--            android:text="fghfdghfghfghfgh"-->
-<!--            android:textSize="18sp"-->
-<!--            app:layout_constraintBottom_toBottomOf="@+id/textView2"-->
-<!--            app:layout_constraintStart_toEndOf="@+id/location"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/textView1" />-->
+        <!--        <Button-->
+        <!--            android:id="@+id/centerButton_1"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="48dp"-->
+        <!--            android:layout_marginStart="8dp"-->
+        <!--            android:layout_marginLeft="8dp"-->
+        <!--            android:layout_marginEnd="8dp"-->
+        <!--            android:layout_marginRight="8dp"-->
+        <!--            android:onClick="loadRecord"-->
+        <!--            android:text="記錄2"-->
+        <!--            android:textSize="18sp"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@+id/licensePlate_1"-->
+        <!--            app:layout_constraintStart_toEndOf="@+id/licensePlate_1"-->
+        <!--            app:layout_constraintTop_toTopOf="@+id/licensePlate_1" />-->
+        <!--        <Button-->
+        <!--            android:id="@+id/centerButton_1"-->
+        <!--            android:layout_width="116dp"-->
+        <!--            android:layout_height="48dp"-->
+        <!--            android:layout_marginStart="8dp"-->
+        <!--            android:layout_marginLeft="8dp"-->
+        <!--            android:text="fghfdghfghfghfgh"-->
+        <!--            android:textSize="18sp"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@+id/textView2"-->
+        <!--            app:layout_constraintStart_toEndOf="@+id/location"-->
+        <!--            app:layout_constraintTop_toBottomOf="@+id/textView1" />-->
 
 
 
 
 
-<!--        <Button-->
-<!--            android:id="@+id/Group1recordButton_1"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="48dp"-->
-<!--            android:layout_marginStart="8dp"-->
-<!--            android:layout_marginLeft="8dp"-->
-<!--            android:layout_marginEnd="8dp"-->
-<!--            android:layout_marginRight="8dp"-->
-<!--            android:onClick="loadRecord"-->
-<!--            android:text="空"-->
-<!--            android:textSize="18sp"-->
-<!--            app:layout_constraintBottom_toBottomOf="@+id/licensePlate_1"-->
-<!--            app:layout_constraintStart_toEndOf="@+id/licensePlate_1"-->
-<!--            app:layout_constraintTop_toTopOf="@+id/licensePlate_1" />-->
-<!--        <Button-->
-<!--            android:id="@+id/Group1recordButton_2"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="48dp"-->
-<!--            android:layout_marginStart="8dp"-->
-<!--            android:layout_marginLeft="8dp"-->
-<!--            android:layout_marginEnd="8dp"-->
-<!--            android:layout_marginRight="8dp"-->
-<!--            android:onClick="loadRecord"-->
-<!--            android:text="2"-->
-<!--            android:textSize="18sp"-->
-<!--            app:layout_constraintBottom_toBottomOf="@+id/licensePlate_1"-->
-<!--            app:layout_constraintStart_toEndOf="@+id/Group1recordButton_1"-->
-<!--            app:layout_constraintTop_toTopOf="@+id/licensePlate_1" />-->
-<!--        <Button-->
-<!--            android:id="@+id/Group1recordButton_3"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="48dp"-->
-<!--            android:layout_marginStart="8dp"-->
-<!--            android:layout_marginLeft="8dp"-->
-<!--            android:layout_marginEnd="8dp"-->
-<!--            android:layout_marginRight="8dp"-->
-<!--            android:onClick="loadRecord"-->
-<!--            android:text="3"-->
-<!--            android:textSize="18sp"-->
-<!--            app:layout_constraintBottom_toBottomOf="@+id/licensePlate_1"-->
-<!--            app:layout_constraintStart_toEndOf="@+id/Group1recordButton_2"-->
-<!--            app:layout_constraintTop_toTopOf="@+id/licensePlate_1" />-->
-<!--        <Button-->
-<!--            android:id="@+id/Group1recordButton_4"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="48dp"-->
-<!--            android:layout_marginStart="8dp"-->
-<!--            android:layout_marginLeft="8dp"-->
-<!--            android:layout_marginEnd="8dp"-->
-<!--            android:layout_marginRight="8dp"-->
-<!--            android:onClick="loadRecord"-->
-<!--            android:text="4"-->
-<!--            android:textSize="18sp"-->
-<!--            app:layout_constraintBottom_toBottomOf="@+id/licensePlate_1"-->
-<!--            app:layout_constraintStart_toEndOf="@+id/Group1recordButton_3"-->
-<!--            app:layout_constraintTop_toTopOf="@+id/licensePlate_1" />-->
+        <!--        <Button-->
+        <!--            android:id="@+id/Group1recordButton_1"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="48dp"-->
+        <!--            android:layout_marginStart="8dp"-->
+        <!--            android:layout_marginLeft="8dp"-->
+        <!--            android:layout_marginEnd="8dp"-->
+        <!--            android:layout_marginRight="8dp"-->
+        <!--            android:onClick="loadRecord"-->
+        <!--            android:text="空"-->
+        <!--            android:textSize="18sp"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@+id/licensePlate_1"-->
+        <!--            app:layout_constraintStart_toEndOf="@+id/licensePlate_1"-->
+        <!--            app:layout_constraintTop_toTopOf="@+id/licensePlate_1" />-->
+        <!--        <Button-->
+        <!--            android:id="@+id/Group1recordButton_2"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="48dp"-->
+        <!--            android:layout_marginStart="8dp"-->
+        <!--            android:layout_marginLeft="8dp"-->
+        <!--            android:layout_marginEnd="8dp"-->
+        <!--            android:layout_marginRight="8dp"-->
+        <!--            android:onClick="loadRecord"-->
+        <!--            android:text="2"-->
+        <!--            android:textSize="18sp"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@+id/licensePlate_1"-->
+        <!--            app:layout_constraintStart_toEndOf="@+id/Group1recordButton_1"-->
+        <!--            app:layout_constraintTop_toTopOf="@+id/licensePlate_1" />-->
+        <!--        <Button-->
+        <!--            android:id="@+id/Group1recordButton_3"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="48dp"-->
+        <!--            android:layout_marginStart="8dp"-->
+        <!--            android:layout_marginLeft="8dp"-->
+        <!--            android:layout_marginEnd="8dp"-->
+        <!--            android:layout_marginRight="8dp"-->
+        <!--            android:onClick="loadRecord"-->
+        <!--            android:text="3"-->
+        <!--            android:textSize="18sp"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@+id/licensePlate_1"-->
+        <!--            app:layout_constraintStart_toEndOf="@+id/Group1recordButton_2"-->
+        <!--            app:layout_constraintTop_toTopOf="@+id/licensePlate_1" />-->
+        <!--        <Button-->
+        <!--            android:id="@+id/Group1recordButton_4"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="48dp"-->
+        <!--            android:layout_marginStart="8dp"-->
+        <!--            android:layout_marginLeft="8dp"-->
+        <!--            android:layout_marginEnd="8dp"-->
+        <!--            android:layout_marginRight="8dp"-->
+        <!--            android:onClick="loadRecord"-->
+        <!--            android:text="4"-->
+        <!--            android:textSize="18sp"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@+id/licensePlate_1"-->
+        <!--            app:layout_constraintStart_toEndOf="@+id/Group1recordButton_3"-->
+        <!--            app:layout_constraintTop_toTopOf="@+id/licensePlate_1" />-->
         <Button
             android:id="@+id/Group1recordButton_1"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:onClick="loadRecord"
             android:visibility="visible"
             android:text="P1"
             android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/Group1recordButton_3"
-            app:layout_constraintStart_toStartOf="@+id/Group1recordButton_3" />
+            app:layout_constraintTop_toBottomOf="@+id/Group1TextView3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/Group1recordButton_2"/>
         <Button
             android:id="@+id/Group1recordButton_2"
             android:layout_width="48dp"
@@ -781,7 +772,8 @@
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/Group1recordButton_1"
             app:layout_constraintStart_toEndOf="@+id/Group1recordButton_1"
-            app:layout_constraintTop_toTopOf="@+id/Group1recordButton_1" />
+            app:layout_constraintTop_toTopOf="@+id/Group1recordButton_1"
+            app:layout_constraintEnd_toStartOf="@+id/Group1recordButton_3"/>
         <Button
             android:id="@+id/Group1recordButton_3"
             android:layout_width="48dp"
@@ -794,9 +786,10 @@
             android:visibility="visible"
             android:text="P3"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/licensePlate_1"
-            app:layout_constraintStart_toEndOf="@+id/licensePlate_1"
-            app:layout_constraintTop_toTopOf="@+id/licensePlate_1" />
+            app:layout_constraintBottom_toBottomOf="@+id/Group1recordButton_1"
+            app:layout_constraintStart_toEndOf="@+id/Group1recordButton_2"
+            app:layout_constraintTop_toTopOf="@+id/Group1recordButton_1"
+            app:layout_constraintEnd_toStartOf="@+id/Group1recordButton_4"/>
         <Button
             android:id="@+id/Group1recordButton_4"
             android:layout_width="48dp"
@@ -811,20 +804,23 @@
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/Group1recordButton_3"
             app:layout_constraintStart_toEndOf="@+id/Group1recordButton_3"
-            app:layout_constraintTop_toTopOf="@+id/Group1recordButton_3" />
+            app:layout_constraintTop_toTopOf="@+id/Group1recordButton_3"
+            app:layout_constraintEnd_toEndOf="@+id/view3"/>
 
         <Button
             android:id="@+id/Group2recordButton_1"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:onClick="loadRecord"
             android:visibility="visible"
             android:text="P1"
             android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/Group2recordButton_3"
-            app:layout_constraintStart_toStartOf="@+id/Group2recordButton_3" />
+            app:layout_constraintTop_toBottomOf="@+id/Group2TextView3"
+            app:layout_constraintStart_toStartOf="@+id/view3"
+            app:layout_constraintEnd_toStartOf="@+id/Group2recordButton_2" />
         <Button
             android:id="@+id/Group2recordButton_2"
             android:layout_width="48dp"
@@ -838,7 +834,8 @@
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/Group2recordButton_1"
             app:layout_constraintStart_toEndOf="@+id/Group2recordButton_1"
-            app:layout_constraintTop_toTopOf="@+id/Group2recordButton_1" />
+            app:layout_constraintTop_toTopOf="@+id/Group2recordButton_1"
+            app:layout_constraintEnd_toStartOf="@+id/Group2recordButton_3"/>
         <Button
             android:id="@+id/Group2recordButton_3"
             android:layout_width="48dp"
@@ -850,9 +847,10 @@
             android:onClick="loadRecord"
             android:text="P3"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/licensePlate_2"
-            app:layout_constraintStart_toEndOf="@+id/licensePlate_2"
-            app:layout_constraintTop_toTopOf="@+id/licensePlate_2" />
+            app:layout_constraintBottom_toBottomOf="@+id/Group2recordButton_1"
+            app:layout_constraintStart_toEndOf="@+id/Group2recordButton_2"
+            app:layout_constraintTop_toTopOf="@+id/Group2recordButton_1"
+            app:layout_constraintEnd_toStartOf="@+id/Group2recordButton_4" />
         <Button
             android:id="@+id/Group2recordButton_4"
             android:layout_width="48dp"
@@ -866,20 +864,23 @@
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/Group2recordButton_3"
             app:layout_constraintStart_toEndOf="@+id/Group2recordButton_3"
-            app:layout_constraintTop_toTopOf="@+id/Group2recordButton_3" />
+            app:layout_constraintTop_toTopOf="@+id/Group2recordButton_3"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <Button
             android:id="@+id/Group3recordButton_1"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:onClick="loadRecord"
             android:visibility="visible"
             android:text="P1"
             android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/Group3recordButton_3"
-            app:layout_constraintStart_toStartOf="@+id/Group3recordButton_3" />
+            app:layout_constraintTop_toBottomOf="@+id/Group3TextView3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/Group3recordButton_2"/>
         <Button
             android:id="@+id/Group3recordButton_2"
             android:layout_width="48dp"
@@ -893,7 +894,8 @@
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/Group3recordButton_1"
             app:layout_constraintStart_toEndOf="@+id/Group3recordButton_1"
-            app:layout_constraintTop_toTopOf="@+id/Group3recordButton_1" />
+            app:layout_constraintTop_toTopOf="@+id/Group3recordButton_1"
+            app:layout_constraintEnd_toStartOf="@+id/Group3recordButton_3" />
         <Button
             android:id="@+id/Group3recordButton_3"
             android:layout_width="48dp"
@@ -905,9 +907,10 @@
             android:onClick="loadRecord"
             android:text="P3"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/licensePlate_3"
-            app:layout_constraintStart_toEndOf="@+id/licensePlate_3"
-            app:layout_constraintTop_toTopOf="@+id/licensePlate_3" />
+            app:layout_constraintBottom_toBottomOf="@+id/Group3recordButton_1"
+            app:layout_constraintStart_toEndOf="@+id/Group3recordButton_2"
+            app:layout_constraintTop_toTopOf="@+id/Group3recordButton_1"
+            app:layout_constraintEnd_toStartOf="@+id/Group3recordButton_4" />
         <Button
             android:id="@+id/Group3recordButton_4"
             android:layout_width="48dp"
@@ -921,19 +924,22 @@
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/Group3recordButton_3"
             app:layout_constraintStart_toEndOf="@+id/Group3recordButton_3"
-            app:layout_constraintTop_toTopOf="@+id/Group3recordButton_3" />
+            app:layout_constraintTop_toTopOf="@+id/Group3recordButton_3"
+            app:layout_constraintEnd_toEndOf="@+id/view3" />
         <Button
             android:id="@+id/Group4recordButton_1"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:onClick="loadRecord"
             android:visibility="visible"
             android:text="P1"
             android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/Group4recordButton_3"
-            app:layout_constraintStart_toStartOf="@+id/Group4recordButton_3" />
+            app:layout_constraintTop_toBottomOf="@+id/Group4TextView3"
+            app:layout_constraintStart_toStartOf="@+id/view3"
+            app:layout_constraintEnd_toStartOf="@+id/Group4recordButton_2"/>
         <Button
             android:id="@+id/Group4recordButton_2"
             android:layout_width="48dp"
@@ -947,7 +953,8 @@
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/Group4recordButton_1"
             app:layout_constraintStart_toEndOf="@+id/Group4recordButton_1"
-            app:layout_constraintTop_toTopOf="@+id/Group4recordButton_1" />
+            app:layout_constraintTop_toTopOf="@+id/Group4recordButton_1"
+            app:layout_constraintEnd_toStartOf="@+id/Group4recordButton_3"/>
         <Button
             android:id="@+id/Group4recordButton_3"
             android:layout_width="48dp"
@@ -959,9 +966,10 @@
             android:onClick="loadRecord"
             android:text="P3"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/licensePlate_4"
-            app:layout_constraintStart_toEndOf="@+id/licensePlate_4"
-            app:layout_constraintTop_toTopOf="@+id/licensePlate_4" />
+            app:layout_constraintBottom_toBottomOf="@+id/Group4recordButton_1"
+            app:layout_constraintStart_toEndOf="@+id/Group4recordButton_2"
+            app:layout_constraintTop_toTopOf="@+id/Group4recordButton_1"
+            app:layout_constraintEnd_toStartOf="@+id/Group4recordButton_4" />
         <Button
             android:id="@+id/Group4recordButton_4"
             android:layout_width="48dp"
@@ -975,15 +983,15 @@
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/Group4recordButton_3"
             app:layout_constraintStart_toEndOf="@+id/Group4recordButton_3"
-            app:layout_constraintTop_toTopOf="@+id/Group4recordButton_3" />
+            app:layout_constraintTop_toTopOf="@+id/Group4recordButton_3"
+            app:layout_constraintEnd_toEndOf="parent" />
 
 <!--        <TextView-->
 <!--            android:id="@+id/Group1TextView1"-->
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="20dp"-->
+<!--            android:layout_marginTop="10dp"-->
 <!--            android:text="A性別："-->
-<!--            android:visibility="gone"-->
 <!--            android:textColor="@android:color/black"-->
 <!--            android:textSize="18sp"-->
 <!--            app:layout_constraintStart_toStartOf="@+id/textView1"-->
@@ -993,7 +1001,6 @@
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
 <!--            android:orientation="horizontal"-->
-<!--            android:visibility="gone"-->
 <!--            app:layout_constraintBottom_toBottomOf="@+id/Group1TextView1"-->
 <!--            app:layout_constraintStart_toEndOf="@+id/Group1TextView1"-->
 <!--            app:layout_constraintTop_toTopOf="@+id/Group1TextView1">-->
@@ -1016,9 +1023,8 @@
 <!--            android:id="@+id/Group1TextViewAge"-->
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="24dp"-->
+<!--            android:layout_marginTop="10dp"-->
 <!--            android:text="年齡︰"-->
-<!--            android:visibility="gone"-->
 <!--            android:textColor="@android:color/black"-->
 <!--            android:textSize="18sp"-->
 <!--            app:layout_constraintStart_toStartOf="@+id/Group1TextView1"-->
@@ -1028,7 +1034,6 @@
 <!--            android:layout_width="0dp"-->
 <!--            android:layout_height="0dp"-->
 <!--            android:orientation="horizontal"-->
-<!--            android:visibility="gone"-->
 <!--            app:layout_constraintBottom_toBottomOf="@+id/Group1TextViewAge"-->
 <!--            app:layout_constraintEnd_toEndOf="@+id/view3"-->
 <!--            app:layout_constraintStart_toEndOf="@+id/Group1TextViewAge"-->
@@ -1039,27 +1044,27 @@
 <!--                android:layout_width="0dp"-->
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_weight="1"-->
-<!--                android:text="20歲以下" />-->
+<!--                android:text="20&lt;" />-->
 
 <!--            <RadioButton-->
 <!--                android:id="@+id/from20to45_1"-->
 <!--                android:layout_width="0dp"-->
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_weight="1"-->
-<!--                android:text="20至45歲" />-->
+<!--                android:text="20-45" />-->
 
 <!--            <RadioButton-->
 <!--                android:id="@+id/above45_1"-->
 <!--                android:layout_width="0dp"-->
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_weight="1"-->
-<!--                android:text="45歲以上" />-->
+<!--                android:text=">45" />-->
 <!--        </RadioGroup>-->
         <TextView
             android:id="@+id/Group1TextView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="18dp"
             android:text="路線︰"
             android:textColor="@android:color/black"
             android:textSize="18sp"
@@ -1087,7 +1092,7 @@
             android:id="@+id/Group1TextView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="18dp"
             android:maxLength="6"
             android:text="車牌︰"
             android:textColor="@android:color/black"
@@ -1103,41 +1108,39 @@
             app:layout_constraintBottom_toBottomOf="@+id/Group1TextView3"
             app:layout_constraintStart_toEndOf="@+id/Group1TextView3"
             app:layout_constraintTop_toTopOf="@+id/Group1TextView3" />
-        <TextView
-            android:id="@+id/Group1TextViewTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="乘客排隊時間︰"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="@+id/Group1TextView3"
-            app:layout_constraintTop_toBottomOf="@+id/Group1TextView3" />
+<!--        <TextView-->
+<!--            android:id="@+id/Group1TextViewTime"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="18dp"-->
+<!--            android:text="乘客排隊時間︰"-->
+<!--            android:textColor="@android:color/black"-->
+<!--            android:textSize="18sp"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/Group1TextView3"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/Group1TextView3" />-->
         <Button
             android:id="@+id/startButton_1"
-            android:layout_width="140dp"
+            android:layout_width="90dp"
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:onClick="markTime"
-            android:text="Start Time"
+            android:text="S-Time:"
             android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="@+id/Group1TextViewTime"
-            app:layout_constraintTop_toBottomOf="@+id/Group1TextViewTime" />
+            app:layout_constraintStart_toStartOf="@+id/Group1TextView3"
+            app:layout_constraintTop_toBottomOf="@+id/Group1recordButton_1" />
         <Button
             android:id="@+id/endButton_1"
-            android:layout_width="140dp"
+            android:layout_width="90dp"
             android:layout_height="48dp"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:onClick="markTime"
-            android:text="End Time"
+            android:text="E-Time:"
             android:textSize="18sp"
             app:layout_constraintTop_toBottomOf="@+id/startButton_1"
-            app:layout_constraintStart_toStartOf="@+id/Group1TextViewTime" />
+            app:layout_constraintStart_toStartOf="@+id/startButton_1" />
         <EditText
             android:id="@+id/startTime_1"
             android:layout_width="180dp"
@@ -1158,34 +1161,35 @@
             app:layout_constraintBottom_toBottomOf="@+id/endButton_1"
             app:layout_constraintStart_toEndOf="@+id/endButton_1"
             app:layout_constraintTop_toTopOf="@+id/endButton_1" />
-        <Button
-            android:id="@+id/saveButton_1"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:onClick="markTime"
-            android:text="Save"
-            app:layout_constraintEnd_toEndOf="@id/view3"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/endButton_1"
-            app:layout_constraintVertical_bias="0.595" />
+
+            <Button
+                android:id="@+id/saveButton_1"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"
+                android:onClick="markTime"
+                android:text="Save"
+                app:layout_constraintEnd_toEndOf="@id/view3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/endTime_1" />
         <!--        <android.support.constraint.Guideline-->
-<!--            android:id="@+id/guideline"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="vertical"-->
-<!--            app:layout_constraintGuide_begin="278dp" />-->
+        <!--            android:id="@+id/guideline"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:orientation="vertical"-->
+        <!--            app:layout_constraintGuide_begin="278dp" />-->
 
 
 
 
 
-<!--        <android.support.constraint.Guideline-->
-<!--            android:id="@+id/guideline2"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="vertical"-->
-<!--            app:layout_constraintGuide_begin="499dp" />-->
+        <!--        <android.support.constraint.Guideline-->
+        <!--            android:id="@+id/guideline2"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:orientation="vertical"-->
+        <!--            app:layout_constraintGuide_begin="499dp" />-->
 
         <View
             android:id="@+id/view"
@@ -1198,7 +1202,7 @@
 
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cleanRecordButton" />
+            app:layout_constraintTop_toBottomOf="@+id/textView_Record_licensePlate_Title1" />
 
         <View
             android:id="@+id/view2"
@@ -1230,9 +1234,8 @@
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
 <!--            android:layout_marginLeft="10dp"-->
-<!--            android:layout_marginTop="20dp"-->
+<!--            android:layout_marginTop="10dp"-->
 <!--            android:text="B性別︰"-->
-<!--            android:visibility="gone"-->
 <!--            android:textColor="@android:color/black"-->
 <!--            android:textSize="18sp"-->
 <!--            app:layout_constraintStart_toStartOf="@+id/view3"-->
@@ -1242,7 +1245,6 @@
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
 <!--            android:orientation="horizontal"-->
-<!--            android:visibility="gone"-->
 <!--            app:layout_constraintBottom_toBottomOf="@+id/Group2TextView1"-->
 <!--            app:layout_constraintStart_toEndOf="@+id/Group2TextView1"-->
 <!--            app:layout_constraintTop_toTopOf="@+id/Group2TextView1">-->
@@ -1268,9 +1270,8 @@
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
 <!--            android:layout_marginLeft="10dp"-->
-<!--            android:layout_marginTop="20dp"-->
+<!--            android:layout_marginTop="10dp"-->
 <!--            android:text="D性別︰"-->
-<!--            android:visibility="gone"-->
 <!--            android:textColor="@android:color/black"-->
 <!--            android:textSize="18sp"-->
 <!--            app:layout_constraintStart_toStartOf="@+id/view3"-->
@@ -1281,7 +1282,6 @@
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
 <!--            android:orientation="horizontal"-->
-<!--            android:visibility="gone"-->
 <!--            app:layout_constraintBottom_toBottomOf="@+id/Group4TextView1"-->
 <!--            app:layout_constraintStart_toEndOf="@+id/Group4TextView1"-->
 <!--            app:layout_constraintTop_toTopOf="@+id/Group4TextView1">-->
@@ -1304,9 +1304,8 @@
 <!--            android:id="@+id/Group4TextViewAge"-->
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="24dp"-->
+<!--            android:layout_marginTop="10dp"-->
 <!--            android:text="年齡︰"-->
-<!--            android:visibility="gone"-->
 <!--            android:textColor="@android:color/black"-->
 <!--            android:textSize="18sp"-->
 <!--            app:layout_constraintStart_toStartOf="@+id/Group4TextView1"-->
@@ -1317,7 +1316,6 @@
 <!--            android:layout_width="0dp"-->
 <!--            android:layout_height="0dp"-->
 <!--            android:orientation="horizontal"-->
-<!--            android:visibility="gone"-->
 <!--            app:layout_constraintBottom_toBottomOf="@+id/Group4TextViewAge"-->
 <!--            app:layout_constraintEnd_toEndOf="parent"-->
 <!--            app:layout_constraintStart_toEndOf="@+id/Group4TextViewAge"-->
@@ -1328,27 +1326,27 @@
 <!--                android:layout_width="0dp"-->
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_weight="1"-->
-<!--                android:text="20歲以下" />-->
+<!--                android:text="20&lt;" />-->
 
 <!--            <RadioButton-->
 <!--                android:id="@+id/from20to45_4"-->
 <!--                android:layout_width="0dp"-->
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_weight="1"-->
-<!--                android:text="20至45歲" />-->
+<!--                android:text="20-45" />-->
 
 <!--            <RadioButton-->
 <!--                android:id="@+id/above45_4"-->
 <!--                android:layout_width="0dp"-->
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_weight="1"-->
-<!--                android:text="45歲以上" />-->
+<!--                android:text=">45" />-->
 <!--        </RadioGroup>-->
         <TextView
             android:id="@+id/Group4TextView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="18dp"
             android:layout_marginLeft="10dp"
             android:text="路線︰"
             android:textColor="@android:color/black"
@@ -1377,7 +1375,7 @@
             android:id="@+id/Group4TextView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="18dp"
             android:maxLength="6"
             android:text="車牌︰"
             android:textColor="@android:color/black"
@@ -1393,41 +1391,39 @@
             app:layout_constraintBottom_toBottomOf="@+id/Group4TextView3"
             app:layout_constraintStart_toEndOf="@+id/Group4TextView3"
             app:layout_constraintTop_toTopOf="@+id/Group4TextView3" />
-        <TextView
-            android:id="@+id/Group4TextViewTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="乘客排隊時間︰"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="@+id/Group4TextView3"
-            app:layout_constraintTop_toBottomOf="@+id/Group4TextView3" />
+<!--        <TextView-->
+<!--            android:id="@+id/Group4TextViewTime"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="18dp"-->
+<!--            android:text="乘客排隊時間︰"-->
+<!--            android:textColor="@android:color/black"-->
+<!--            android:textSize="18sp"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/Group4TextView3"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/Group4TextView3" />-->
         <Button
             android:id="@+id/startButton_4"
-            android:layout_width="140dp"
+            android:layout_width="90dp"
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:onClick="markTime"
-            android:text="Start Time"
+            android:text="S-Time:"
             android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="@+id/Group4TextViewTime"
-            app:layout_constraintTop_toBottomOf="@+id/Group4TextViewTime" />
+            app:layout_constraintStart_toStartOf="@+id/Group4TextView3"
+            app:layout_constraintTop_toBottomOf="@+id/Group4recordButton_1" />
         <Button
             android:id="@+id/endButton_4"
-            android:layout_width="140dp"
+            android:layout_width="90dp"
             android:layout_height="48dp"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:onClick="markTime"
-            android:text="End Time"
+            android:text="E-Time:"
             android:textSize="18sp"
             app:layout_constraintTop_toBottomOf="@+id/startButton_4"
-            app:layout_constraintStart_toStartOf="@+id/Group2TextViewTime" />
+            app:layout_constraintStart_toStartOf="@+id/startButton_4" />
         <EditText
             android:id="@+id/startTime_4"
             android:layout_width="180dp"
@@ -1450,111 +1446,112 @@
             app:layout_constraintTop_toTopOf="@+id/endButton_4" />
         <Button
             android:id="@+id/saveButton_4"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="8dp"
             android:onClick="markTime"
             android:text="Save"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/view3"
-            app:layout_constraintTop_toBottomOf="@+id/endButton_4"
+            app:layout_constraintStart_toStartOf="@+id/view3"
+            app:layout_constraintTop_toBottomOf="@+id/endTime_4"
             app:layout_constraintVertical_bias="0.595" />
 
 
-<!--        <com.example.umtec_brain.circleButton.CircleButton-->
-<!--            android:id="@+id/circleButtonOne"-->
-<!--            android:layout_width="92dp"-->
-<!--            android:layout_height="89dp"-->
-<!--            android:layout_centerInParent="true"-->
-<!--            app:layout_constraintBottom_toBottomOf="@+id/licensePlate_1"-->
-<!--            app:layout_constraintEnd_toStartOf="@+id/view3"-->
-<!--            app:layout_constraintStart_toEndOf="@+id/route1"-->
-<!--            app:layout_constraintTop_toTopOf="@+id/route1" />-->
-<!--        <Button-->
-<!--            android:id="@+id/centerButton_1"-->
-<!--            android:layout_width="60dp"-->
-<!--            android:layout_height="60dp"-->
-<!--            android:text="A"-->
-<!--            android:textSize="18sp"-->
-<!--            android:background="@drawable/circle_button_background"-->
-<!--            android:gravity="center"-->
-<!--            app:layout_constraintBottom_toBottomOf="@+id/licensePlate_1"-->
-<!--            app:layout_constraintStart_toEndOf="@+id/licensePlate_1"-->
-<!--            app:layout_constraintTop_toTopOf="@+id/licensePlate_1"-->
-<!--            />-->
+        <!--        <com.example.umtec_brain.circleButton.CircleButton-->
+        <!--            android:id="@+id/circleButtonOne"-->
+        <!--            android:layout_width="92dp"-->
+        <!--            android:layout_height="89dp"-->
+        <!--            android:layout_centerInParent="true"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@+id/licensePlate_1"-->
+        <!--            app:layout_constraintEnd_toStartOf="@+id/view3"-->
+        <!--            app:layout_constraintStart_toEndOf="@+id/route1"-->
+        <!--            app:layout_constraintTop_toTopOf="@+id/route1" />-->
+        <!--        <Button-->
+        <!--            android:id="@+id/centerButton_1"-->
+        <!--            android:layout_width="60dp"-->
+        <!--            android:layout_height="60dp"-->
+        <!--            android:text="A"-->
+        <!--            android:textSize="18sp"-->
+        <!--            android:background="@drawable/circle_button_background"-->
+        <!--            android:gravity="center"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@+id/licensePlate_1"-->
+        <!--            app:layout_constraintStart_toEndOf="@+id/licensePlate_1"-->
+        <!--            app:layout_constraintTop_toTopOf="@+id/licensePlate_1"-->
+        <!--            />-->
 
-<!--        <android.support.constraint.ConstraintLayout-->
-<!--            android:id="@+id/overlay"-->
-<!--            android:layout_width="200dp"-->
-<!--            android:layout_height="200dp"-->
-<!--            android:visibility="gone"-->
-<!--            android:background="@drawable/circle_mask"-->
-<!--            app:layout_constraintBottom_toBottomOf="@+id/centerButton_1"-->
-<!--            app:layout_constraintEnd_toEndOf="@+id/centerButton_1"-->
-<!--            app:layout_constraintStart_toStartOf="@+id/centerButton_1"-->
-<!--            app:layout_constraintTop_toTopOf="@+id/centerButton_1"-->
-<!--            />-->
+        <!--        <android.support.constraint.ConstraintLayout-->
+        <!--            android:id="@+id/overlay"-->
+        <!--            android:layout_width="200dp"-->
+        <!--            android:layout_height="200dp"-->
+        <!--            android:visibility="gone"-->
+        <!--            android:background="@drawable/circle_mask"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@+id/centerButton_1"-->
+        <!--            app:layout_constraintEnd_toEndOf="@+id/centerButton_1"-->
+        <!--            app:layout_constraintStart_toStartOf="@+id/centerButton_1"-->
+        <!--            app:layout_constraintTop_toTopOf="@+id/centerButton_1"-->
+        <!--            />-->
 
-<!--        <Button-->
-<!--            android:id="@+id/Group1_record1"-->
-<!--            android:layout_width="48dp"-->
-<!--            android:layout_height="48dp"-->
-<!--            android:background="@drawable/circle_button_background"-->
-<!--            android:gravity="center"-->
-<!--            android:padding="8dp"-->
-<!--            android:text="記錄1"-->
-<!--            android:visibility="gone"-->
-<!--            app:layout_constraintCircle="@+id/centerButton_1"-->
-<!--            app:layout_constraintCircleAngle="350"-->
-<!--            app:layout_constraintCircleRadius="100dp"-->
-<!--            tools:ignore="MissingConstraints"/>-->
+        <!--        <Button-->
+        <!--            android:id="@+id/Group1_record1"-->
+        <!--            android:layout_width="48dp"-->
+        <!--            android:layout_height="48dp"-->
+        <!--            android:background="@drawable/circle_button_background"-->
+        <!--            android:gravity="center"-->
+        <!--            android:padding="8dp"-->
+        <!--            android:text="記錄1"-->
+        <!--            android:visibility="gone"-->
+        <!--            app:layout_constraintCircle="@+id/centerButton_1"-->
+        <!--            app:layout_constraintCircleAngle="350"-->
+        <!--            app:layout_constraintCircleRadius="100dp"-->
+        <!--            tools:ignore="MissingConstraints"/>-->
 
-<!--        <Button-->
-<!--            android:id="@+id/Group1_record2"-->
-<!--            android:layout_width="48dp"-->
-<!--            android:layout_height="48dp"-->
-<!--            android:text="記錄2"-->
-<!--            android:background="@drawable/circle_button_background"-->
-<!--            android:gravity="center"-->
-<!--            android:padding="8dp"-->
-<!--            android:visibility="gone"-->
-<!--            app:layout_constraintCircle="@+id/centerButton_1"-->
-<!--            app:layout_constraintCircleRadius="100dp"-->
-<!--            app:layout_constraintCircleAngle="295"-->
-<!--            tools:ignore="MissingConstraints"/>-->
+        <!--        <Button-->
+        <!--            android:id="@+id/Group1_record2"-->
+        <!--            android:layout_width="48dp"-->
+        <!--            android:layout_height="48dp"-->
+        <!--            android:text="記錄2"-->
+        <!--            android:background="@drawable/circle_button_background"-->
+        <!--            android:gravity="center"-->
+        <!--            android:padding="8dp"-->
+        <!--            android:visibility="gone"-->
+        <!--            app:layout_constraintCircle="@+id/centerButton_1"-->
+        <!--            app:layout_constraintCircleRadius="100dp"-->
+        <!--            app:layout_constraintCircleAngle="295"-->
+        <!--            tools:ignore="MissingConstraints"/>-->
 
-<!--        <Button-->
-<!--            android:id="@+id/Group1_record3"-->
-<!--            android:layout_width="48dp"-->
-<!--            android:layout_height="48dp"-->
-<!--            android:text="記錄3"-->
-<!--            android:background="@drawable/circle_button_background"-->
-<!--            android:gravity="center"-->
-<!--            android:padding="8dp"-->
-<!--            android:visibility="gone"-->
-<!--            app:layout_constraintCircle="@+id/centerButton_1"-->
-<!--            app:layout_constraintCircleRadius="100dp"-->
-<!--            app:layout_constraintCircleAngle="245"-->
-<!--            tools:ignore="MissingConstraints"/>-->
-<!--        <Button-->
-<!--            android:id="@+id/Group1_record4"-->
-<!--            android:layout_width="48dp"-->
-<!--            android:layout_height="48dp"-->
-<!--            android:text="記錄4"-->
-<!--            android:background="@drawable/circle_button_background"-->
-<!--            android:gravity="center"-->
-<!--            android:padding="8dp"-->
-<!--            android:visibility="gone"-->
-<!--            app:layout_constraintCircle="@+id/centerButton_1"-->
-<!--            app:layout_constraintCircleRadius="100dp"-->
-<!--            app:layout_constraintCircleAngle="190"-->
-<!--            tools:ignore="MissingConstraints" />-->
+        <!--        <Button-->
+        <!--            android:id="@+id/Group1_record3"-->
+        <!--            android:layout_width="48dp"-->
+        <!--            android:layout_height="48dp"-->
+        <!--            android:text="記錄3"-->
+        <!--            android:background="@drawable/circle_button_background"-->
+        <!--            android:gravity="center"-->
+        <!--            android:padding="8dp"-->
+        <!--            android:visibility="gone"-->
+        <!--            app:layout_constraintCircle="@+id/centerButton_1"-->
+        <!--            app:layout_constraintCircleRadius="100dp"-->
+        <!--            app:layout_constraintCircleAngle="245"-->
+        <!--            tools:ignore="MissingConstraints"/>-->
+        <!--        <Button-->
+        <!--            android:id="@+id/Group1_record4"-->
+        <!--            android:layout_width="48dp"-->
+        <!--            android:layout_height="48dp"-->
+        <!--            android:text="記錄4"-->
+        <!--            android:background="@drawable/circle_button_background"-->
+        <!--            android:gravity="center"-->
+        <!--            android:padding="8dp"-->
+        <!--            android:visibility="gone"-->
+        <!--            app:layout_constraintCircle="@+id/centerButton_1"-->
+        <!--            app:layout_constraintCircleRadius="100dp"-->
+        <!--            app:layout_constraintCircleAngle="190"-->
+        <!--            tools:ignore="MissingConstraints" />-->
     </android.support.constraint.ConstraintLayout>
-<!--        <FrameLayout-->
-<!--            android:id="@+id/mask_layout"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:visibility="invisible"-->
-<!--            android:background="#80000000"/>-->
-<!--    </FrameLayout>-->
+    <!--        <FrameLayout-->
+    <!--            android:id="@+id/mask_layout"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="match_parent"-->
+    <!--            android:visibility="invisible"-->
+    <!--            android:background="#80000000"/>-->
+    <!--    </FrameLayout>-->
 </ScrollView>
