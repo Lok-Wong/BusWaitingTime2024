@@ -703,10 +703,10 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
 
     public void resetAllData() {
         // 这里添加重置所有数据的代码
-        //            SharedPreferences preferences = getSharedPreferences("AppData", MODE_PRIVATE);
-//            SharedPreferences.Editor editor = preferences.edit();
-//            editor.clear();
-//            editor.apply();
+                    SharedPreferences preferences = getSharedPreferences("AppData", MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.clear();
+            editor.apply();
         initSpinnerData();
         startTime_1.setText("");
         endTime_1.setText("");
@@ -906,67 +906,131 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         if (surveyType_3.isChecked()) {
             switch (view.getId()) {
                 case R.id.Group1recordButton_1:
-                    setSpinnerSelectionBasedOnText(spinner1, route01, spinner2, spinner3, spinner4);
+                    if(route01.isEmpty()){
+                        spinner1.setSelection(0);
+                    }else{
+                        setSpinnerSelectionBasedOnText(spinner1, route01, spinner2, spinner3, spinner4);
+                    }
                     licensePlate_1.setText(licensePlate01);
                     break;
                 case R.id.Group1recordButton_2:
-                    setSpinnerSelectionBasedOnText(spinner1, route02, spinner2, spinner3, spinner4);
+                    if(route02.isEmpty()){
+                        spinner1.setSelection(0);
+                    }else {
+                        setSpinnerSelectionBasedOnText(spinner1, route02, spinner2, spinner3, spinner4);
+                    }
                     licensePlate_1.setText(licensePlate02);
                     break;
                 case R.id.Group1recordButton_3:
-                    setSpinnerSelectionBasedOnText(spinner1, route03, spinner2, spinner3, spinner4);
+                    if(route03.isEmpty()){
+                        spinner1.setSelection(0);
+                    }else {
+                        setSpinnerSelectionBasedOnText(spinner1, route03, spinner2, spinner3, spinner4);
+                    }
                     licensePlate_1.setText(licensePlate03);
                     break;
                 case R.id.Group1recordButton_4:
-                    setSpinnerSelectionBasedOnText(spinner1, route04, spinner2, spinner3, spinner4);
+                    if(route04.isEmpty()){
+                        spinner1.setSelection(0);
+                    }else {
+                        setSpinnerSelectionBasedOnText(spinner1, route04, spinner2, spinner3, spinner4);
+                    }
                     licensePlate_1.setText(licensePlate04);
                     break;
                 case R.id.Group2recordButton_1:
-                    setSpinnerSelectionBasedOnText(spinner2, route01, spinner1, spinner3, spinner4);
+                    if(route01.isEmpty()){
+                        spinner2.setSelection(0);
+                    }else {
+                        setSpinnerSelectionBasedOnText(spinner2, route01, spinner1, spinner3, spinner4);
+                    }
                     licensePlate_2.setText(licensePlate01);
                     break;
                 case R.id.Group2recordButton_2:
-                    setSpinnerSelectionBasedOnText(spinner2, route02, spinner1, spinner3, spinner4);
+                    if(route02.isEmpty()){
+                        spinner2.setSelection(0);
+                    }else {
+                        setSpinnerSelectionBasedOnText(spinner2, route02, spinner1, spinner3, spinner4);
+                    }
                     licensePlate_2.setText(licensePlate02);
                     break;
                 case R.id.Group2recordButton_3:
-                    setSpinnerSelectionBasedOnText(spinner2, route03, spinner1, spinner3, spinner4);
+                    if(route03.isEmpty()){
+                        spinner2.setSelection(0);
+                    }else {
+                        setSpinnerSelectionBasedOnText(spinner2, route03, spinner1, spinner3, spinner4);
+                    }
                     licensePlate_2.setText(licensePlate03);
                     break;
                 case R.id.Group2recordButton_4:
-                    setSpinnerSelectionBasedOnText(spinner2, route04, spinner1, spinner3, spinner4);
+                    if(route04.isEmpty()){
+                        spinner2.setSelection(0);
+                    }else {
+                        setSpinnerSelectionBasedOnText(spinner2, route04, spinner1, spinner3, spinner4);
+                    }
                     licensePlate_2.setText(licensePlate04);
                     break;
                 case R.id.Group3recordButton_1:
-                    setSpinnerSelectionBasedOnText(spinner3, route01, spinner1, spinner2, spinner4);
+                    if(route01.isEmpty()){
+                        spinner3.setSelection(0);
+                    }else {
+                        setSpinnerSelectionBasedOnText(spinner3, route01, spinner1, spinner2, spinner4);
+                    }
                     licensePlate_3.setText(licensePlate01);
                     break;
                 case R.id.Group3recordButton_2:
-                    setSpinnerSelectionBasedOnText(spinner3, route02, spinner1, spinner2, spinner4);
+                    if(route02.isEmpty()){
+                        spinner3.setSelection(0);
+                    }else {
+                        setSpinnerSelectionBasedOnText(spinner3, route02, spinner1, spinner2, spinner4);
+                    }
                     licensePlate_3.setText(licensePlate02);
                     break;
                 case R.id.Group3recordButton_3:
-                    setSpinnerSelectionBasedOnText(spinner3, route03, spinner1, spinner2, spinner4);
+                    if(route03.isEmpty()){
+                        spinner3.setSelection(0);
+                    }else {
+                        setSpinnerSelectionBasedOnText(spinner3, route03, spinner1, spinner2, spinner4);
+                    }
                     licensePlate_3.setText(licensePlate03);
                     break;
                 case R.id.Group3recordButton_4:
-                    setSpinnerSelectionBasedOnText(spinner3, route04, spinner1, spinner2, spinner4);
+                    if(route04.isEmpty()){
+                        spinner3.setSelection(0);
+                    }else {
+                        setSpinnerSelectionBasedOnText(spinner3, route04, spinner1, spinner2, spinner4);
+                    }
                     licensePlate_3.setText(licensePlate04);
                     break;
                 case R.id.Group4recordButton_1:
-                    setSpinnerSelectionBasedOnText(spinner4, route01, spinner1, spinner2, spinner3);
+                    if(route01.isEmpty()){
+                        spinner4.setSelection(0);
+                    }else {
+                        setSpinnerSelectionBasedOnText(spinner4, route01, spinner1, spinner2, spinner3);
+                    }
                     licensePlate_4.setText(licensePlate01);
                     break;
                 case R.id.Group4recordButton_2:
-                    setSpinnerSelectionBasedOnText(spinner4, route02, spinner1, spinner2, spinner3);
+                    if(route02.isEmpty()){
+                        spinner4.setSelection(0);
+                    }else {
+                        setSpinnerSelectionBasedOnText(spinner4, route02, spinner1, spinner2, spinner3);
+                    }
                     licensePlate_4.setText(licensePlate02);
                     break;
                 case R.id.Group4recordButton_3:
-                    setSpinnerSelectionBasedOnText(spinner4, route03, spinner1, spinner2, spinner3);
+                    if(route03.isEmpty()){
+                        spinner4.setSelection(0);
+                    }else {
+                        setSpinnerSelectionBasedOnText(spinner4, route03, spinner1, spinner2, spinner3);
+                    }
                     licensePlate_4.setText(licensePlate03);
                     break;
                 case R.id.Group4recordButton_4:
-                    setSpinnerSelectionBasedOnText(spinner4, route04, spinner1, spinner2, spinner3);
+                    if(route04.isEmpty()){
+                        spinner4.setSelection(0);
+                    }else {
+                        setSpinnerSelectionBasedOnText(spinner4, route04, spinner1, spinner2, spinner3);
+                    }
                     licensePlate_4.setText(licensePlate04);
                     break;
             }
