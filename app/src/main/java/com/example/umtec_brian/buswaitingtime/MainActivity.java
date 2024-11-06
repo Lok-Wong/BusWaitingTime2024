@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
     Spinner spinner1, spinner2, spinner3, spinner4;
     LocationManager locationManager;
     double lat, lon;
-    String[] busNumArray = {"請選擇", "25B", "25BS", "50", "102X", "701X (往望德聖母灣)", "701X (往澳大)", "701S (往澳大)", "其它"};
+    String[] busNumArray = {"請選擇", "25B", "25BS", "50", "102X", "701X (往望德聖母灣)", "701X (往澳大)", "701XS (往澳大)", "其它"};
     String[] typeList = {"普通", "101x/102x", "橫琴"};
 
     private ArrayAdapter<String> sharedAdapter; // 共享适配器
@@ -2175,7 +2175,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                         startTime_4.setText("");
                         endTime_4.setText("");
 //                                        route3.setText("");
-                        licensePlate_3.setText("");
+                        licensePlate_4.setText("");
                         textView1.setTextColor(getResources().getColor(R.color.colorPrimary));
                         textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
                         break;
