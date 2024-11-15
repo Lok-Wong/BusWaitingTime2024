@@ -68,6 +68,8 @@ class station {
     };
 
     public static final List<String> locationNeedCopy = Arrays.asList(
-            "M10 台山街市","M132 十六浦","M134 新馬路/華僑","M172 亞馬喇前地","T560 橫琴澳方口岸","T308 氹仔電訊"
+            "M10 台山街市","M132 十六浦","M134 新馬路/華僑","M172 亞馬喇前地",  "T308 氹仔電訊",
+            "T560 橫琴澳方口岸"
+
     );
 }
