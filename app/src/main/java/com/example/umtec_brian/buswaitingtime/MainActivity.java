@@ -4,8 +4,11 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
+import android.Manifest;
 import android.content.Intent;
+import android.net.Uri;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.Lifecycle;
@@ -55,6 +58,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity implements LifecycleObserver {
 
@@ -108,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
     private List<String> spinnerData; // 共享数据源
     // 定义请求码常量
     private static final int REQUEST_CODE_MANAGE_EXTERNAL_STORAGE = 1;
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
@@ -1171,7 +1177,18 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
 
     }
 
-
+//        @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if (requestCode == REQUEST_EXTERNAL_STORAGE) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                // 权限被授予，可以执行存储操作
+//            } else {
+//                // 权限被拒绝，提示用户或关闭相关功能
+//                showToast("當前沒有讀寫權限,將不能進行保存");
+//            }
+//        }
+//    }
     public void saveData(final int number, final String route, final String startTime,
                          final String endTime, final String licensePlate,
 //                         final String gender,
@@ -1252,22 +1269,50 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                 });
                 dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface arg0, int arg1) {
-
-                        //授予讀寫權限
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
-                            Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
-                            // startActivity(intent);
-                            startActivityForResult(intent, REQUEST_CODE_MANAGE_EXTERNAL_STORAGE);
-                            Toast.makeText(MainActivity.this, "請允許存储权限再進行提交，否则应用无法正常工作。", Toast.LENGTH_LONG).show();
-                        } else {
-                            // 已经拥有权限，继续执行其他操作
-                            proceedWithOperations(number, route, startTime, endTime, licensePlate,
+//                        checkPermission();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                            if (!Environment.isExternalStorageManager()) {
+                                Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                                startActivityForResult(intent, REQUEST_CODE_MANAGE_EXTERNAL_STORAGE);
+                                showToast("請先開通讀取權限,否則不能進行保存");
+                            } else if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                    // 请求精确位置权限
+                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package", getPackageName(), null);
+                                intent.setData(uri);
+                                startActivity(intent);
+                                showToast("請先開通位置權限,否則不能進行保存");
+                            } else {
+                                proceedWithOperations(number, route, startTime, endTime, licensePlate,
 //                                    gender,
-                                    key);
+                                        key);
+                            }
+                        } else {
+                            int permission = ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                            int permissionFine = ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION);
+                            int permissionCoarse = ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION);
+
+                            if (permission != PackageManager.PERMISSION_GRANTED) {
+                                showToast("請先開通讀取權限,否則不能進行保存");
+                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package", getPackageName(), null);
+                                intent.setData(uri);
+                                startActivity(intent);
+                            } else if (permissionFine != PackageManager.PERMISSION_GRANTED && permissionCoarse != PackageManager.PERMISSION_GRANTED) {
+                                // 检查是否已经被授予了精确位置权限或大致位置权限
+                                showToast("請先開通位置權限，否則不能進行保存");
+                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package", getPackageName(), null);
+                                intent.setData(uri);
+                                startActivity(intent);
+                            } else {
+                                // 权限已被授予，可以执行存储操作
+                                proceedWithOperations(number, route, startTime, endTime, licensePlate,
+//                                    gender,
+                                        key);
+                            }
                         }
-
                     }
-
                 });
 
                 dialog.show();
@@ -1275,7 +1320,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         }
     }
 
-    //拆出來寫
+//拆出來寫
 //    private void proceedWithOperations(final int number, final String route, final String startTime,
 //                                       final String endTime, final String licensePlate,
 ////                                        final String gender,
@@ -2259,7 +2304,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         }
     }
 
-    public String  updateRouteValue(String currentRoute) {
+    public String updateRouteValue(String currentRoute) {
         for (String busNumber : busNumArray) {
             if (currentRoute.equals(busNumber)) {
                 switch (busNumber) {
@@ -2274,6 +2319,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         }
         return currentRoute;// 如果没有匹配，返回原值
     }
+
     private void writeToFileTryAndCatch(String surveyorNo, String filePath,
                                         String route, String licensePlate,
                                         String startTime, String endTime,
@@ -2281,8 +2327,8 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                         String location, String toast
 //                                          double lon, double lat
     ) {
-        if( type.equals("hengqinRouteWithOutWay") ){
-           route = updateRouteValue(route);
+        if (type.equals("hengqinRouteWithOutWay")) {
+            route = updateRouteValue(route);
         }
         try {
             location();
@@ -2366,7 +2412,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                             location.getText().toString(), "toastCopy"
 //                Double.parseDouble(lon.getText().toString()), Double.parseDouble(lat.getText().toString())
                     );
-                }else{
+                } else {
                     createDirectoryIfNotExists(filePath);
                     writeToFileTryAndCatch(
                             surveyorNo.getText().toString(), filePath + fileName,
@@ -2465,7 +2511,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
     }
 
     public void cleanEditText(String type, int number) {
-        if(!type.equals("none")&&!type.equals("hengqinRouteWithOutWay")){
+        if (!type.equals("none") && !type.equals("hengqinRouteWithOutWay")) {
             switch (number) {
                 case 1:
                     startTime_1.setText("");
@@ -2516,6 +2562,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
     public void FindView() {
 //        scrollView = findViewById(R.id.scrollView);
 //        circleButton = findViewById(R.id.circleButtonOne);
+
         surveyorNo = getView(R.id.surveyorNo);
         location = getView(R.id.location);
         route1 = getView(R.id.route1);

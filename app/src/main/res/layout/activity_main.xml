@@ -486,7 +486,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="ver:2024-11"
+                android:text="ver:2024.11.2"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -679,6 +679,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView_Record_licensePlate_Title1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
 <!--        <Button-->
 <!--            android:id="@+id/centerButton_1"-->
 <!--            android:layout_width="0dp"-->
