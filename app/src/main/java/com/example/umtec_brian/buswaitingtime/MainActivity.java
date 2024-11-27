@@ -1177,7 +1177,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
 
     }
 
-//        @Override
+    //        @Override
 //    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 //        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 //        if (requestCode == REQUEST_EXTERNAL_STORAGE) {
@@ -1276,7 +1276,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                 startActivityForResult(intent, REQUEST_CODE_MANAGE_EXTERNAL_STORAGE);
                                 showToast("請先開通讀取權限,否則不能進行保存");
                             } else if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                    // 请求精确位置权限
+                                // 请求精确位置权限
                                 Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                                 Uri uri = Uri.fromParts("package", getPackageName(), null);
                                 intent.setData(uri);
@@ -2289,7 +2289,9 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
     }
 
     private String getFileName(String surveyorNo, String currentDate, String type) {
-        String baseFileName = surveyorNo + "-" + currentDate;
+        //獲取安卓ID
+        @SuppressLint("HardwareIds") String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        String baseFileName = surveyorNo + "-" + currentDate + "-" + deviceId;
         switch (type) {
             case "name_copy":
                 return baseFileName + "-copyFromNormal.txt";
@@ -2337,7 +2339,6 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
             writeToFile(type, fOut, surveyorNo, route, licensePlate, startTime, endTime, number, location
 //                    Double.parseDouble(lon.getText().toString()), Double.parseDouble(lat.getText().toString())
             );
-            fOut.write("\r\n".getBytes());
             switch (toast) {
                 case "toastNormal":
                     showToast("已儲存。");
@@ -2483,28 +2484,28 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                 fOut.write((route + "-").getBytes());
                 fOut.write((licensePlate_1.getText().toString() + "-").getBytes());
                 fOut.write((startTime + "-").getBytes());
-                fOut.write((endTime + "\r\n").getBytes());
+                fOut.write((endTime + "\n").getBytes());
                 cleanEditText(type, number);
                 break;
             case 2:
                 fOut.write((route + "-").getBytes());
                 fOut.write((licensePlate_2.getText().toString() + "-").getBytes());
                 fOut.write((startTime + "-").getBytes());
-                fOut.write((endTime + "\r\n").getBytes());
+                fOut.write((endTime + "\n").getBytes());
                 cleanEditText(type, number);
                 break;
             case 3:
                 fOut.write((route + "-").getBytes());
                 fOut.write((licensePlate_3.getText().toString() + "-").getBytes());
                 fOut.write((startTime + "-").getBytes());
-                fOut.write((endTime + "\r\n").getBytes());
+                fOut.write((endTime + "\n").getBytes());
                 cleanEditText(type, number);
                 break;
             case 4:
                 fOut.write((route + "-").getBytes());
                 fOut.write((licensePlate_4.getText().toString() + "-").getBytes());
                 fOut.write((startTime + "-").getBytes());
-                fOut.write((endTime + "\r\n").getBytes());
+                fOut.write((endTime + "\n").getBytes());
                 cleanEditText(type, number);
                 break;
         }
@@ -2722,7 +2723,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
             } else if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
                 providerName = LocationManager.NETWORK_PROVIDER;
             } else {
-                Toast.makeText(getBaseContext(), "No location provider available", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getBaseContext(), "No location provider available", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -2751,7 +2752,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
             if (location != null) {
                 onLocationChanged(location);
             } else {
-                Toast.makeText(getBaseContext(), "Location can't be retrieved", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getBaseContext(), "Location can't be retrieved", Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             Log.e("Error", "Exception in location(): " + e.getMessage());
