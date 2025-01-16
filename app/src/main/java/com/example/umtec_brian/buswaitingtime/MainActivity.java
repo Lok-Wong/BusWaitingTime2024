@@ -30,11 +30,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -101,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
     Spinner spinner1, spinner2, spinner3, spinner4;
     LocationManager locationManager;
     double lat, lon;
-    String[] busNumArray = {"請選擇", "25B", "25BS", "50", "102X", "701X (往望德聖母灣)", "701X (往澳大)", "701XS (往澳大)", "其它"};
+    String[] busNumArray = {"請選擇", "25B", "25BS", "50", "102X", "701X (往望德聖母灣)", "701X (往澳大)", "701XS", "其它"};
     String[] typeList = {"普通", "101x/102x", "橫琴"};
     // 定義文件存儲的基本路徑作為常量
     private static final String BASE_FOLDER = "UMTEC";
@@ -142,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         FindView();
         initialization();
         checkPermission();
-        setRecord();
+//        setRecord();
         initSpinnerData();
 
 //        ArrayAdapter<String> adapter = new ArrayAdapter<>(
@@ -163,6 +166,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
 //        spinner4.setOnItemSelectedListener(new Spinner4Class());
         //時間選擇
         setupEditTextWatchers();
+
         surveyorNo.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -192,7 +196,11 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                 if ("其它".equals(selectedItemText)) {
                     showCustomInputDialog(spinner1, spinner2, spinner3, spinner4);
                 } else {
-                    route1.setText(selectedItemText);
+                    if ("請選擇".equals(selectedItemText)) {
+                        route1.setText("");
+                    } else {
+                        route1.setText(selectedItemText);
+                    }
                 }
             }
 
@@ -208,7 +216,12 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                 if ("其它".equals(selectedItemText)) {
                     showCustomInputDialog(spinner2, spinner3, spinner4, spinner1);
                 } else {
-                    route2.setText(selectedItemText);
+                    if ("請選擇".equals(selectedItemText)) {
+                        route2.setText("");
+                    } else {
+                        route2.setText(selectedItemText);
+                    }
+
                 }
             }
 
@@ -224,7 +237,12 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                 if ("其它".equals(selectedItemText)) {
                     showCustomInputDialog(spinner3, spinner4, spinner1, spinner2);
                 } else {
-                    route3.setText(selectedItemText);
+                    if ("請選擇".equals(selectedItemText)) {
+                        route3.setText("");
+                    } else {
+                        route3.setText(selectedItemText);
+                    }
+
                 }
             }
 
@@ -240,7 +258,11 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                 if ("其它".equals(selectedItemText)) {
                     showCustomInputDialog(spinner4, spinner1, spinner2, spinner3);
                 } else {
-                    route4.setText(selectedItemText);
+                    if ("請選擇".equals(selectedItemText)) {
+                        route4.setText("");
+                    } else {
+                        route4.setText(selectedItemText);
+                    }
                 }
             }
 
@@ -249,14 +271,83 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                 // Do nothing
             }
         });
-        licensePlate_1.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+        route1.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                textView_Record_route_1.setText(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+        route2.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                textView_Record_route_2.setText(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+        route3.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                textView_Record_route_3.setText(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+        route4.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                textView_Record_route_4.setText(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+        //                if (charSequence.length() > 6) {
+//                    showToast("輸入內容已達到最大長度");
+//                    // 如果输入的字符超过6个，截取前6个字符
+//                    licensePlate_1.setText(charSequence.subSequence(0, 6));
+//                    // 将光标移动到末尾
+//                    licensePlate_1.setSelection(6);
+//                    // 显示提示信息
+//                }
+        licensePlate_1.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int after) {
+                if (charSequence.length() == 6) {
+                    licensePlate_1.clearFocus();
+                    hideKeyboard(licensePlate_1);
+                }
+
             }
 
             @Override
@@ -271,17 +362,37 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                 if (editable.length() == 0) {
                     Group1TextView3.setTextColor(getResources().getColor(R.color.colorPrimary));
                 }
+
+                textView_Record_licensePlate_1.setText(editable);
             }
         });
 
+        // 设置点击监听器，以便重新聚焦
+
+        licensePlate_1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                licensePlate_1.setFocusable(true);
+                licensePlate_1.setFocusableInTouchMode(true);
+                licensePlate_1.clearFocus();
+                licensePlate_1.requestFocus();
+                showKeyboard(licensePlate_1);
+            }
+        });
         licensePlate_2.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int after) {
             }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int after) {
+
+                if (charSequence.length() == 6) {
+                    // 输入完六位后失焦
+                    licensePlate_2.clearFocus();
+                    hideKeyboard(licensePlate_2);
+                }
+
             }
 
 
@@ -298,11 +409,21 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                 }
                 if (editable.length() == 0) {
                     Group2TextView3.setTextColor(getResources().getColor(R.color.colorPrimary));
-
                 }
+                textView_Record_licensePlate_2.setText(editable);
             }
         });
 
+        licensePlate_2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                licensePlate_2.setFocusable(true);
+                licensePlate_2.setFocusableInTouchMode(true);
+                licensePlate_2.clearFocus();
+                licensePlate_2.requestFocus();
+                showKeyboard(licensePlate_2);
+            }
+        });
         licensePlate_3.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -311,6 +432,11 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() == 6) {
+                    // 输入完六位后失焦
+                    licensePlate_3.clearFocus();
+                    hideKeyboard(licensePlate_3);
+                }
             }
 
 
@@ -327,6 +453,18 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                 if (editable.length() == 0) {
                     Group3TextView3.setTextColor(getResources().getColor(R.color.colorPrimary));
                 }
+                textView_Record_licensePlate_3.setText(editable);
+            }
+        });
+        // licensePlate_3 的点击监听器
+        licensePlate_3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                licensePlate_3.setFocusable(true);
+                licensePlate_3.setFocusableInTouchMode(true);
+                licensePlate_3.clearFocus();
+                licensePlate_3.requestFocus();
+                showKeyboard(licensePlate_3);
             }
         });
         licensePlate_4.addTextChangedListener(new TextWatcher() {
@@ -337,6 +475,11 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() == 6) {
+                    // 输入完六位后失焦
+                    licensePlate_4.clearFocus();
+                    hideKeyboard(licensePlate_4);
+                }
             }
 
 
@@ -353,8 +496,23 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                 if (editable.length() == 0) {
                     Group4TextView3.setTextColor(getResources().getColor(R.color.colorPrimary));
                 }
+                textView_Record_licensePlate_4.setText(editable);
             }
         });
+
+
+// licensePlate_4 的点击监听器
+        licensePlate_4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                licensePlate_4.setFocusable(true);
+                licensePlate_4.setFocusableInTouchMode(true);
+                licensePlate_4.clearFocus();
+                licensePlate_4.requestFocus();
+                showKeyboard(licensePlate_4);
+            }
+        });
+
 
         surveyType_1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -409,9 +567,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                 }
             }
         });
-
     }
-
 
     public void setupEditTextWatchers() {
         addTextWatcherToEditText(startTime_1, endTime_1);
@@ -466,6 +622,22 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         spinner2.setAdapter(sharedAdapter);
         spinner3.setAdapter(sharedAdapter);
         spinner4.setAdapter(sharedAdapter);
+    }
+
+    // 隐藏软键盘
+    private void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    // 显示软键盘
+    private void showKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.showSoftInput(view, InputMethodManager.SHOW_FORCED);
+        }
     }
 
     private void showCustomInputDialog(Spinner spinner, Spinner spinnerOther1, Spinner spinnerOther2, Spinner spinnerOther3) {
@@ -531,7 +703,6 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                     Toast.makeText(MainActivity.this, "輸入框不能為空", Toast.LENGTH_SHORT).show();
                 }
             }
-
         });
     }
 
@@ -677,25 +848,33 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         return true;
     }
 
-    public void setRecord() {
-        SharedPreferences preferences = getSharedPreferences("AppData", MODE_PRIVATE);
-        String route01 = preferences.getString("data_1" + "route", "");
-        String route02 = preferences.getString("data_2" + "route", "");
-        String route03 = preferences.getString("data_3" + "route", "");
-        String route04 = preferences.getString("data_4" + "route", "");
-        String licensePlate01 = preferences.getString("data_1" + "licensePlate", "");
-        String licensePlate02 = preferences.getString("data_2" + "licensePlate", "");
-        String licensePlate03 = preferences.getString("data_3" + "licensePlate", "");
-        String licensePlate04 = preferences.getString("data_4" + "licensePlate", "");
-        textView_Record_route_1.setText(route01);
-        textView_Record_route_2.setText(route02);
-        textView_Record_route_3.setText(route03);
-        textView_Record_route_4.setText(route04);
-        textView_Record_licensePlate_1.setText(licensePlate01);
-        textView_Record_licensePlate_2.setText(licensePlate02);
-        textView_Record_licensePlate_3.setText(licensePlate03);
-        textView_Record_licensePlate_4.setText(licensePlate04);
-    }
+//    public void setRecord() {
+////        SharedPreferences preferences = getSharedPreferences("AppData", MODE_PRIVATE);
+////        String route01 = preferences.getString("data_1" + "route", "");
+////        String route02 = preferences.getString("data_2" + "route", "");
+////        String route03 = preferences.getString("data_3" + "route", "");
+////        String route04 = preferences.getString("data_4" + "route", "");
+////        String licensePlate01 = preferences.getString("data_1" + "licensePlate", "");
+////        String licensePlate02 = preferences.getString("data_2" + "licensePlate", "");
+////        String licensePlate03 = preferences.getString("data_3" + "licensePlate", "");
+////        String licensePlate04 = preferences.getString("data_4" + "licensePlate", "");
+//        String route01 = textView_Record_route_1.getText().toString();
+//        String licensePlate01 = textView_Record_licensePlate_1.getText().toString();
+//        String route02 = textView_Record_route_2.getText().toString();
+//        String licensePlate02 = textView_Record_licensePlate_2.getText().toString();
+//        String route03 = textView_Record_route_3.getText().toString();
+//        String licensePlate03 = textView_Record_licensePlate_3.getText().toString();
+//        String route04 = textView_Record_route_4.getText().toString();
+//        String licensePlate04 = textView_Record_licensePlate_4.getText().toString();
+//        textView_Record_route_1.setText(route01);
+//        textView_Record_route_2.setText(route02);
+//        textView_Record_route_3.setText(route03);
+//        textView_Record_route_4.setText(route04);
+//        textView_Record_licensePlate_1.setText(licensePlate01);
+//        textView_Record_licensePlate_2.setText(licensePlate02);
+//        textView_Record_licensePlate_3.setText(licensePlate03);
+//        textView_Record_licensePlate_4.setText(licensePlate04);
+//    }
 
     public void resetData() {
         new AlertDialog.Builder(this)
@@ -905,15 +1084,23 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
 
     @SuppressLint("NonConstantResourceId")
     public void loadRecord(View view) {
-        SharedPreferences preferences = getSharedPreferences("AppData", MODE_PRIVATE);
-        String route01 = preferences.getString("data_1" + "route", "");
-        String licensePlate01 = preferences.getString("data_1" + "licensePlate", "");
-        String route02 = preferences.getString("data_2" + "route", "");
-        String licensePlate02 = preferences.getString("data_2" + "licensePlate", "");
-        String route03 = preferences.getString("data_3" + "route", "");
-        String licensePlate03 = preferences.getString("data_3" + "licensePlate", "");
-        String route04 = preferences.getString("data_4" + "route", "");
-        String licensePlate04 = preferences.getString("data_4" + "licensePlate", "");
+//        SharedPreferences preferences = getSharedPreferences("AppData", MODE_PRIVATE);
+//        String route01 = preferences.getString("data_1" + "route", "");
+//        String licensePlate01 = preferences.getString("data_1" + "licensePlate", "");
+//        String route02 = preferences.getString("data_2" + "route", "");
+//        String licensePlate02 = preferences.getString("data_2" + "licensePlate", "");
+//        String route03 = preferences.getString("data_3" + "route", "");
+//        String licensePlate03 = preferences.getString("data_3" + "licensePlate", "");
+//        String route04 = preferences.getString("data_4" + "route", "");
+//        String licensePlate04 = preferences.getString("data_4" + "licensePlate", "");
+        String route01 = textView_Record_route_1.getText().toString();
+        String licensePlate01 = textView_Record_licensePlate_1.getText().toString();
+        String route02 = textView_Record_route_2.getText().toString();
+        String licensePlate02 = textView_Record_licensePlate_2.getText().toString();
+        String route03 = textView_Record_route_3.getText().toString();
+        String licensePlate03 = textView_Record_licensePlate_3.getText().toString();
+        String route04 = textView_Record_route_4.getText().toString();
+        String licensePlate04 = textView_Record_licensePlate_4.getText().toString();
         if (surveyType_3.isChecked()) {
             switch (view.getId()) {
                 case R.id.Group1recordButton_1:
@@ -2291,18 +2478,18 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
     private String getFileName(String surveyorNo, String currentDate, String type) {
         //獲取安卓ID
         @SuppressLint("HardwareIds") String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        String baseFileName = surveyorNo + "-" + currentDate + "-" + deviceId;
+        String baseFileName = surveyorNo + "-" + currentDate;
         switch (type) {
             case "name_copy":
-                return baseFileName + "-copyFromNormal.txt";
+                return baseFileName + "-CN" + "-" + deviceId + ".txt";
             case "name_101x":
-                return baseFileName + "-x.txt";
+                return baseFileName + "-x" + "-" + deviceId + ".txt";
             case "name_hengqin":
-                return baseFileName + "-h.txt";
+                return baseFileName + "-h" + "-" + deviceId + ".txt";
             case "name_hengqin_Copy":
-                return baseFileName + "-h-copyFromHengQin.txt";
+                return baseFileName + "-CH" + "-" + deviceId + ".txt";
             default:
-                return baseFileName + ".txt";
+                return baseFileName + "-" + deviceId + ".txt";
         }
     }
 
@@ -2313,8 +2500,6 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                     case "701X (往望德聖母灣)":
                     case "701X (往澳大)":
                         return "701X";
-                    case "701XS (往澳大)":
-                        return "701XS";
                 }
                 break; // 找到匹配项后退出循环
             }
@@ -2352,7 +2537,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                 default:
                     break;
             }
-            setRecord();
+//            setRecord();
 
         } catch (Exception e) {
             Log.d("FileWriteError", "例外發生: " + e.toString());
@@ -2478,7 +2663,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         fOut.write((location + "-").getBytes());
         fOut.write((String.valueOf(lon) + "-").getBytes());
         fOut.write((String.valueOf(lat) + "-").getBytes());
-        setRecord();
+//        setRecord();
         switch (number) {
             case 1:
                 fOut.write((route + "-").getBytes());
@@ -2513,6 +2698,14 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
 
     public void cleanEditText(String type, int number) {
         if (!type.equals("none") && !type.equals("hengqinRouteWithOutWay")) {
+            String route01 = textView_Record_route_1.getText().toString();
+            String licensePlate01 = textView_Record_licensePlate_1.getText().toString();
+            String route02 = textView_Record_route_2.getText().toString();
+            String licensePlate02 = textView_Record_licensePlate_2.getText().toString();
+            String route03 = textView_Record_route_3.getText().toString();
+            String licensePlate03 = textView_Record_licensePlate_3.getText().toString();
+            String route04 = textView_Record_route_4.getText().toString();
+            String licensePlate04 = textView_Record_licensePlate_4.getText().toString();
             switch (number) {
                 case 1:
                     startTime_1.setText("");
@@ -2521,6 +2714,8 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                         route1.setText("");
                     }
                     licensePlate_1.setText("");
+                    textView_Record_route_1.setText(route01);
+                    textView_Record_licensePlate_1.setText(licensePlate01);
                     textView1.setTextColor(getResources().getColor(R.color.colorPrimary));
                     textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
                     break;
@@ -2531,6 +2726,8 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                         route2.setText("");
                     }
                     licensePlate_2.setText("");
+                    textView_Record_route_2.setText(route02);
+                    textView_Record_licensePlate_2.setText(licensePlate02);
                     textView1.setTextColor(getResources().getColor(R.color.colorPrimary));
                     textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
                     break;
@@ -2541,6 +2738,8 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                         route3.setText("");
                     }
                     licensePlate_3.setText("");
+                    textView_Record_route_3.setText(route03);
+                    textView_Record_licensePlate_3.setText(licensePlate03);
                     textView1.setTextColor(getResources().getColor(R.color.colorPrimary));
                     textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
                     break;
@@ -2551,6 +2750,8 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                         route4.setText("");
                     }
                     licensePlate_4.setText("");
+                    textView_Record_route_4.setText(route04);
+                    textView_Record_licensePlate_4.setText(licensePlate04);
                     textView1.setTextColor(getResources().getColor(R.color.colorPrimary));
                     textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
                     break;
