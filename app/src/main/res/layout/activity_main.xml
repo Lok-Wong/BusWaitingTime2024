@@ -126,7 +126,6 @@
             android:layout_width="140dp"
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:onClick="markTime"
@@ -138,7 +137,6 @@
             android:id="@+id/endButton_2"
             android:layout_width="140dp"
             android:layout_height="48dp"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:onClick="markTime"
@@ -148,7 +146,7 @@
             app:layout_constraintStart_toStartOf="@+id/Group2TextViewTime" />
         <EditText
             android:id="@+id/startTime_2"
-            android:layout_width="180dp"
+            android:layout_width="188dp"
             android:layout_height="0dp"
             android:ems="10"
             android:gravity="center_vertical|center_horizontal|center"
@@ -158,7 +156,7 @@
             app:layout_constraintTop_toTopOf="@+id/startButton_2" />
         <EditText
             android:id="@+id/endTime_2"
-            android:layout_width="180dp"
+            android:layout_width="188dp"
             android:layout_height="0dp"
             android:ems="10"
             android:gravity="center_vertical|center_horizontal|center"
@@ -321,7 +319,6 @@
             android:layout_width="140dp"
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:onClick="markTime"
@@ -333,7 +330,6 @@
             android:id="@+id/endButton_3"
             android:layout_width="140dp"
             android:layout_height="48dp"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:onClick="markTime"
@@ -343,7 +339,7 @@
             app:layout_constraintStart_toStartOf="@+id/Group3TextViewTime" />
         <EditText
             android:id="@+id/startTime_3"
-            android:layout_width="180dp"
+            android:layout_width="188dp"
             android:layout_height="0dp"
             android:ems="10"
             android:gravity="center_vertical|center_horizontal|center"
@@ -353,7 +349,7 @@
             app:layout_constraintTop_toTopOf="@+id/startButton_3" />
         <EditText
             android:id="@+id/endTime_3"
-            android:layout_width="180dp"
+            android:layout_width="188dp"
             android:layout_height="0dp"
             android:ems="10"
             android:gravity="center_vertical|center_horizontal|center"
@@ -407,6 +403,7 @@
             android:ems="10"
             android:gravity="left|center_vertical"
             android:inputType="number"
+            android:maxLength="4"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/textView1"
             app:layout_constraintStart_toEndOf="@+id/textView1"
@@ -488,7 +485,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="ver:25.1.15"
+                android:text="ver:25.2.07"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -670,6 +667,7 @@
             app:layout_constraintWidth_percent="0.15"
             app:layout_constraintBottom_toBottomOf="@+id/textView_Record_licensePlate_Title4"
             app:layout_constraintStart_toEndOf="@+id/textView_Record_licensePlate_Title4" />
+
         <Button
             android:id="@+id/cleanRecordButton"
             android:layout_width="150dp"
@@ -1132,7 +1130,6 @@
             android:layout_width="140dp"
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:onClick="markTime"
@@ -1144,7 +1141,6 @@
             android:id="@+id/endButton_1"
             android:layout_width="140dp"
             android:layout_height="48dp"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:onClick="markTime"
@@ -1154,7 +1150,7 @@
             app:layout_constraintStart_toStartOf="@+id/Group1TextViewTime" />
         <EditText
             android:id="@+id/startTime_1"
-            android:layout_width="180dp"
+            android:layout_width="188dp"
             android:layout_height="0dp"
             android:ems="10"
             android:gravity="center_vertical|center_horizontal|center"
@@ -1164,7 +1160,7 @@
             app:layout_constraintTop_toTopOf="@+id/startButton_1" />
         <EditText
             android:id="@+id/endTime_1"
-            android:layout_width="180dp"
+            android:layout_width="188dp"
             android:layout_height="0dp"
             android:ems="10"
             android:gravity="center_vertical|center_horizontal|center"
@@ -1423,7 +1419,6 @@
             android:layout_width="140dp"
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:onClick="markTime"
@@ -1435,7 +1430,6 @@
             android:id="@+id/endButton_4"
             android:layout_width="140dp"
             android:layout_height="48dp"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:onClick="markTime"
@@ -1445,7 +1439,7 @@
             app:layout_constraintStart_toStartOf="@+id/Group2TextViewTime" />
         <EditText
             android:id="@+id/startTime_4"
-            android:layout_width="180dp"
+            android:layout_width="188dp"
             android:layout_height="0dp"
             android:ems="10"
             android:gravity="center_vertical|center_horizontal|center"
@@ -1455,7 +1449,7 @@
             app:layout_constraintTop_toTopOf="@+id/startButton_4" />
         <EditText
             android:id="@+id/endTime_4"
-            android:layout_width="180dp"
+            android:layout_width="188dp"
             android:layout_height="0dp"
             android:ems="10"
             android:gravity="center_vertical|center_horizontal|center"

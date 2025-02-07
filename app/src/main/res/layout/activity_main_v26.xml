@@ -395,11 +395,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="v25.1.15"
+                android:text="v25.2.07"
                 android:textColor="@android:color/black"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:ignore="NotSibling" />
 
         <EditText
             android:id="@+id/surveyorNo"
@@ -408,6 +409,7 @@
             android:ems="10"
             android:gravity="left|center_vertical"
             android:inputType="number"
+            android:maxLength="4"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/textView1"
             app:layout_constraintStart_toEndOf="@+id/textView1"

@@ -7,5 +7,20 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+<!--    <style name="CustomAlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">-->
+<!--        <item name="android:textColorPrimary">@color/custom_text_color</item>-->
+<!--        <item name="android:background">@color/custom_background_color</item>-->
+<!--        <item name="android:buttonBarPositiveButtonStyle">@style/CustomPositiveButtonStyle</item>-->
+<!--        <item name="android:buttonBarNegativeButtonStyle">@style/CustomNegativeButtonStyle</item>-->
+<!--    </style>-->
 
+<!--    <style name="CustomPositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">-->
+<!--        <item name="android:textColor">@color/custom_positive_button_color</item>-->
+<!--        <item name="android:background">@drawable/button_positive</item>-->
+<!--    </style>-->
+
+<!--    <style name="CustomNegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">-->
+<!--        <item name="android:textColor">@color/custom_negative_button_color</item>-->
+<!--        <item name="android:background">@drawable/button_negative</item>-->
+<!--    </style>-->
 </resources>

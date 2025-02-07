@@ -36,7 +36,9 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -44,6 +46,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -61,6 +64,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -117,6 +121,18 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
     // 定义请求码常量
     private static final int REQUEST_CODE_MANAGE_EXTERNAL_STORAGE = 1;
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
+
+    private long backgroundTime; // 记录进入后台的时间
+    private TextView textViewToRemove; // 需要删除的TextView
+    private AlertDialog dialog; // 用于存储当前显示的对话框
+    private static final long BACKGROUND_TIME_THRESHOLD_15 =
+            15 * 60 * 1000; // 15分钟的毫秒值
+    private static final long BACKGROUND_TIME_THRESHOLD_03 =
+            3 * 60 * 1000; // 3分钟的毫秒值
+
+    // 定义按钮文本的多种变化
+    private final String[] correctButtonTitles = {"正確", "確認", "確定", "無誤", "準確"};
+    private final String[] changeButtonTitles = {"更改", "修改", "重選", "更正", "變更"};
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
@@ -1017,7 +1033,6 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
 
 
 //        surveyType_1.setChecked(true);
-
         location.setEnabled(false);
     }
 
@@ -2864,6 +2879,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         textView_Record_route_2 = getView(R.id.textView_Record_route_2);
         textView_Record_route_3 = getView(R.id.textView_Record_route_3);
         textView_Record_route_4 = getView(R.id.textView_Record_route_4);
+//        dialogAddressText = getView(R.id.dialog_address);
 
         stationButton = getView(R.id.stationButton);
         constraint = getView(R.id.constraint);
@@ -2968,19 +2984,217 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         lat = location.getLatitude();
     }
 
-//    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // 记录进入后台的时间
+        backgroundTime = System.currentTimeMillis();
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // 当前时间
+        long currentTime = System.currentTimeMillis();
+        // 计算时间间隔（单位：毫秒）
+        long timeDifference = currentTime - backgroundTime;
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+//        String backgroundTimeFormatted = dateFormat.format(new Date(currentTime));
+        if (!location.getText().toString().isEmpty()) {
+//            textView1.setText(String.valueOf(timeDifference));
+//            textView2.setText(backgroundTimeFormatted);
+            // 如果时间间隔超过15分钟
+            if (timeDifference > BACKGROUND_TIME_THRESHOLD_15) {
+
+//                location.setText(String.valueOf(timeDifference));
+                showCustomDialog("清空");
+            } else if (timeDifference >= BACKGROUND_TIME_THRESHOLD_03) {
+                // 如果时间间隔大于等于3分钟且小于15分钟
+                showCustomDialog("警告");
+            } else {
+                // 弹出自定义对话框
+                showCustomDialog("詢問");
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void showCustomDialog(String type) {
+        // 使用自定义布局
+        View customView = LayoutInflater.from(this).inflate(R.layout.wranning_dialog_layout, null);
+        // 获取显示消息的TextView
+        TextView addressTextView = customView.findViewById(R.id.dialog_address);
+        TextView questionTextView = customView.findViewById(R.id.dialog_message);
+        // 获取按钮
+        Button positiveButton = customView.findViewById(R.id.dialog_button_positive);
+        Button negativeButton = customView.findViewById(R.id.dialog_button_negative);
+        // 将backgroundTime转换为可读的时间格式
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+//        String backgroundTimeFormatted = dateFormat.format(new Date(backgroundTime));
+//        textView1.setText("進入的時間是:"+backgroundTimeFormatted);
+//        String message = location.getText().toString();
+        // 根据类型调整对话框内容
+        if ("清空".equals(type)) {
+            questionTextView.setText("由於超過15分鐘未操作，位置信息已清空。");
+            // 隐藏“正确”按钮
+            positiveButton.setVisibility(View.GONE);
+            // 设置消息内容
+            addressTextView.setText("");
+            location.setText("");
+        } else if("警告".equals(type)) {
+            // 显示警告信息
+            questionTextView.setVisibility(View.VISIBLE);
+            questionTextView.setText("檢測到當前位置產生了變化，請注意調查地點是否正確？");
+
+            // 设置消息内容
+            addressTextView.setText(location.getText().toString());
+            // 随机选择按钮文本
+            Random random = new Random();
+            positiveButton.setText(correctButtonTitles[random.nextInt(correctButtonTitles.length)]);
+            negativeButton.setText(changeButtonTitles[random.nextInt(changeButtonTitles.length)]);
+            // 随机调整按钮位置
+            randomizeButtonPositions(positiveButton, negativeButton);
+        }
+        else if ("詢問".equals(type)) {
+            questionTextView.setText("請注意調查地點是否正確？");
+
+            // 显示“正确”按钮
+            positiveButton.setVisibility(View.VISIBLE);
+            // 设置消息内容
+            addressTextView.setText(location.getText().toString());
+
+        }
+        // 创建并显示对话框
+        dialog = new AlertDialog.Builder(this)
+                .setView(customView)
+                .setCancelable(false) // 点击外部区域不能关闭
+                .create();
+
+        // 设置点击事件
+        positiveButton.setOnClickListener(v -> {
+            // 处理“正確”按钮的逻辑
+            // 关闭对话框
+            dialog.dismiss();
+        });
+
+        negativeButton.setOnClickListener(v -> {
+            showTypeSelectionDialog();
+            // 关闭对话框
+            dialog.dismiss();
+            // 处理“更改”按钮的逻辑
+        });
+
+
+//        dialogAddressText.setText(message);
+        dialog.show();
+    }
+
+    private void showTypeSelectionDialog() {
+        AlertDialog.Builder typeBuilder = new AlertDialog.Builder(MainActivity.this);
+        typeBuilder.setTitle("請選擇調查種類");
+        typeBuilder.setItems(typeList, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String selectedType = typeList[i];
+                String[] locationListItem = new String[0];
+                switch (selectedType) {
+                    case "普通":
+                        locationListItem = station.location;
+                        surveyType_1.setChecked(true);
+                        break;
+                    case "101x/102x":
+                        locationListItem = station.location_101x;
+                        surveyType_2.setChecked(true);
+                        break;
+                    case "橫琴":
+                        locationListItem = station.location_hengqin;
+                        surveyType_3.setChecked(true);
+                        break;
+                }
+                // 假设locationList是一个方法，用于处理位置列表
+                locationList(location, "請選擇站點︰", locationListItem);
+            }
+        });
+        typeBuilder.show();
+    }
+
+    private void randomizeButtonPositions(Button positiveButton, Button negativeButton) {
+        // 随机决定按钮位置
+        LinearLayout buttonContainer = (LinearLayout) positiveButton.getParent();
+        buttonContainer.removeView(positiveButton);
+        buttonContainer.removeView(negativeButton);
+
+        // 随机插入按钮
+        Random random = new Random();
+        int position = random.nextInt(2); // 0 或 1
+
+        if (position == 0) {
+            buttonContainer.addView(positiveButton);
+            buttonContainer.addView(negativeButton);
+        } else {
+            buttonContainer.addView(negativeButton);
+            buttonContainer.addView(positiveButton);
+        }
+    }
+//    private void randomizeButtonPositions(Button positiveButton, Button negativeButton) {
+//        // 获取按钮容器
+//        LinearLayout buttonContainer = (LinearLayout) positiveButton.getParent();
+//
+//        // 移除按钮
+//        buttonContainer.removeView(positiveButton);
+//        buttonContainer.removeView(negativeButton);
+//
+//        // 随机选择一个位置插入“正确”按钮
+//        Random random = new Random();
+//        int position = random.nextInt(buttonContainer.getChildCount() + 1);
+//
+//        // 插入按钮
+//        buttonContainer.addView(positiveButton, position);
+//        buttonContainer.addView(negativeButton, position == 0 ? 1 : 0);
+//    }
+
+    //    @OnLifecycleEvent(Lifecycle.Event.ON_START)
 //    public void onMoveToForeground(){
 //        Log.d("Event","app moved to foreground");
 //        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 //        builder.setTitle("testing");
 //        builder.show();
 //    }
+//    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+//    public void onMoveToBackground() {
+////        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+//        // 使用自定义布局
+//        View customView = LayoutInflater.from(MainActivity.this)
+//                .inflate(R.layout.wranning_dialog_layout, null);
+//
+//        // 获取布局中的控件
+////        TextView message = customView.findViewById(R.id.dialog_message);
+//        Button positiveButton = customView.findViewById(R.id.dialog_button_positive);
+//        Button negativeButton = customView.findViewById(R.id.dialog_button_negative);
+//
+//        // 设置点击事件
+//        positiveButton.setOnClickListener(v -> {
+//            // 处理“正確”按钮的逻辑
+//        });
+//
+//        negativeButton.setOnClickListener(v -> {
+//            // 处理“更改”按钮的逻辑
+//        });
+//
+//        // 创建并显示对话框
+//        AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+//                .setView(customView)
+//                .create();
+//        dialog.show();
+//    }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    //    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void onMoveToBackground() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         final AlertDialog.Builder typeBuilder = new AlertDialog.Builder(MainActivity.this);
-
         builder.setMessage("請注意調查地點是否正確?")
                 .setPositiveButton("正確", new DialogInterface.OnClickListener() {
                     @Override
