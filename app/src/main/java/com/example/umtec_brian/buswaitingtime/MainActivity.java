@@ -29,6 +29,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.text.AllCapsTransformationMethod;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -128,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
     private static final long BACKGROUND_TIME_THRESHOLD_15 =
             15 * 60 * 1000; // 15分钟的毫秒值
     private static final long BACKGROUND_TIME_THRESHOLD_03 =
-            3 * 60 * 1000; // 3分钟的毫秒值
+            7 * 60 * 1000; // 7分钟的毫秒值
 
     // 定义按钮文本的多种变化
     private final String[] correctButtonTitles = {"正確", "確認", "確定", "無誤", "準確"};
@@ -293,6 +294,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
             }
 
+            @SuppressLint("RestrictedApi")
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 textView_Record_route_1.setText(charSequence);
@@ -1455,13 +1457,70 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
 
                 }
 
-            } else {
+            }
+            else if (!surveyType_3.isChecked()) {
+                // Android 7.0 及以上版本，可以使用 Arrays.stream 和 anyMatch
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    if (!Arrays.stream(station.routeList).anyMatch(text -> text.equalsIgnoreCase(route))) {
+                        new AlertDialog.Builder(this)
+                                .setTitle("該路線 " + route + " 不在常規路線中。")
+                                .setMessage("確定填寫該路線？")
+                                .setPositiveButton("確定", null)
+                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        switch (number) {
+                                            case 1:
+                                                route1.setText("");
+                                                route1.findFocus();
+                                                break;
+                                            case 2:
+                                                route2.setText("");
+                                                route2.findFocus();
+                                                break;
+                                            case 3:
+                                                route3.setText("");
+                                                route3.findFocus();
+                                                break;
+                                            case 4:
+                                                route4.setText("");
+                                                route4.findFocus();
+                                                break;
+                                        }
+                                        return;
+                                    }
+                                })
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .show();
+                    }
+                }
+                else {
+                    // Android 6.0 及以下版本，使用传统的 for 循环
+                    boolean found = false;
+                    for (String text : station.routeList) {
+                        if (text.equalsIgnoreCase(routeText)) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+//                        showToast("該路線 " + route + " 存在於列表中。");
+                    }
+//                    else {
+////                        showToast("路線 " + route + " 不在列表中。");
+//                    }
+                }
+
+            }
+            else {
+                String routeText = route.toUpperCase(); // 将 route 转为大写
+                String licensePlateText = licensePlate.toUpperCase();
+
                 AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
                 dialog.setTitle("確認儲存資料︰");
                 dialog.setMessage("調查員編號︰" + surveyorNo.getText().toString() + "\n調查地點︰" + location.getText().toString() +
 //                        "\n乘客性別︰" + gender +
-                        "\n巴士路線︰" + route +
-                        "\n巴士車牌︰" + licensePlate +
+                        "\n巴士路線︰" + routeText +
+                        "\n巴士車牌︰" + licensePlateText +
                         "\n乘客到站時間︰" + startTime +
                         "\n乘客上車時間︰" + endTime);
                 dialog.setNegativeButton("N0", new DialogInterface.OnClickListener() {
@@ -1477,7 +1536,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                 Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
                                 startActivityForResult(intent, REQUEST_CODE_MANAGE_EXTERNAL_STORAGE);
                                 showToast("請先開通讀取權限,否則不能進行保存");
-                            } else if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            } else if (ActivityCompat.checkSelfPermission(MainActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                                 // 请求精确位置权限
                                 Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                                 Uri uri = Uri.fromParts("package", getPackageName(), null);
@@ -1485,14 +1544,14 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                 startActivity(intent);
                                 showToast("請先開通位置權限,否則不能進行保存");
                             } else {
-                                proceedWithOperations(number, route, startTime, endTime, licensePlate,
+                                proceedWithOperations(number, routeText, startTime, endTime, licensePlateText,
 //                                    gender,
                                         key);
                             }
                         } else {
-                            int permission = ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                            int permissionFine = ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION);
-                            int permissionCoarse = ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION);
+                            int permission = ActivityCompat.checkSelfPermission(MainActivity.this, WRITE_EXTERNAL_STORAGE);
+                            int permissionFine = ActivityCompat.checkSelfPermission(MainActivity.this, ACCESS_FINE_LOCATION);
+                            int permissionCoarse = ActivityCompat.checkSelfPermission(MainActivity.this, ACCESS_COARSE_LOCATION);
 
                             if (permission != PackageManager.PERMISSION_GRANTED) {
                                 showToast("請先開通讀取權限,否則不能進行保存");
@@ -1509,7 +1568,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                 startActivity(intent);
                             } else {
                                 // 权限已被授予，可以执行存储操作
-                                proceedWithOperations(number, route, startTime, endTime, licensePlate,
+                                proceedWithOperations(number, routeText, startTime, endTime, licensePlateText,
 //                                    gender,
                                         key);
                             }
@@ -2678,37 +2737,42 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         fOut.write((location + "-").getBytes());
         fOut.write((String.valueOf(lon) + "-").getBytes());
         fOut.write((String.valueOf(lat) + "-").getBytes());
+        fOut.write((route + "-").getBytes());
+        fOut.write((licensePlate + "-").getBytes());
+        fOut.write((startTime + "-").getBytes());
+        fOut.write((endTime + "\n").getBytes());
+        cleanEditText(type, number);
 //        setRecord();
-        switch (number) {
-            case 1:
-                fOut.write((route + "-").getBytes());
-                fOut.write((licensePlate_1.getText().toString() + "-").getBytes());
-                fOut.write((startTime + "-").getBytes());
-                fOut.write((endTime + "\n").getBytes());
-                cleanEditText(type, number);
-                break;
-            case 2:
-                fOut.write((route + "-").getBytes());
-                fOut.write((licensePlate_2.getText().toString() + "-").getBytes());
-                fOut.write((startTime + "-").getBytes());
-                fOut.write((endTime + "\n").getBytes());
-                cleanEditText(type, number);
-                break;
-            case 3:
-                fOut.write((route + "-").getBytes());
-                fOut.write((licensePlate_3.getText().toString() + "-").getBytes());
-                fOut.write((startTime + "-").getBytes());
-                fOut.write((endTime + "\n").getBytes());
-                cleanEditText(type, number);
-                break;
-            case 4:
-                fOut.write((route + "-").getBytes());
-                fOut.write((licensePlate_4.getText().toString() + "-").getBytes());
-                fOut.write((startTime + "-").getBytes());
-                fOut.write((endTime + "\n").getBytes());
-                cleanEditText(type, number);
-                break;
-        }
+//        switch (number) {
+//            case 1:
+//                fOut.write((route + "-").getBytes());
+//                fOut.write((licensePlate + "-").getBytes());
+//                fOut.write((startTime + "-").getBytes());
+//                fOut.write((endTime + "\n").getBytes());
+//                cleanEditText(type, number);
+//                break;
+//            case 2:
+//                fOut.write((route + "-").getBytes());
+//                fOut.write((licensePlate_2.getText().toString() + "-").getBytes());
+//                fOut.write((startTime + "-").getBytes());
+//                fOut.write((endTime + "\n").getBytes());
+//                cleanEditText(type, number);
+//                break;
+//            case 3:
+//                fOut.write((route + "-").getBytes());
+//                fOut.write((licensePlate_3.getText().toString() + "-").getBytes());
+//                fOut.write((startTime + "-").getBytes());
+//                fOut.write((endTime + "\n").getBytes());
+//                cleanEditText(type, number);
+//                break;
+//            case 4:
+//                fOut.write((route + "-").getBytes());
+//                fOut.write((licensePlate_4.getText().toString() + "-").getBytes());
+//                fOut.write((startTime + "-").getBytes());
+//                fOut.write((endTime + "\n").getBytes());
+//                cleanEditText(type, number);
+//                break;
+//        }
     }
 
     public void cleanEditText(String type, int number) {
@@ -3044,7 +3108,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
             // 设置消息内容
             addressTextView.setText("");
             location.setText("");
-        } else if("警告".equals(type)) {
+        } else if ("警告".equals(type)) {
             // 显示警告信息
             questionTextView.setVisibility(View.VISIBLE);
             questionTextView.setText("檢測到當前位置產生了變化，請注意調查地點是否正確？");
@@ -3057,8 +3121,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
             negativeButton.setText(changeButtonTitles[random.nextInt(changeButtonTitles.length)]);
             // 随机调整按钮位置
             randomizeButtonPositions(positiveButton, negativeButton);
-        }
-        else if ("詢問".equals(type)) {
+        } else if ("詢問".equals(type)) {
             questionTextView.setText("請注意調查地點是否正確？");
 
             // 显示“正确”按钮
