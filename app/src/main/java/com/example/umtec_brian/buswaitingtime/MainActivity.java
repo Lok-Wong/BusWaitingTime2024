@@ -1457,130 +1457,145 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
 
                 }
 
-            }
-            else if (!surveyType_3.isChecked()) {
+            } else if (surveyType_3.isChecked()) {
+                showConfirmDialog(number, route, startTime, endTime, licensePlate, key);
+            } else {
                 // Android 7.0 及以上版本，可以使用 Arrays.stream 和 anyMatch
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    if (!Arrays.stream(station.routeList).anyMatch(text -> text.equalsIgnoreCase(route))) {
-                        new AlertDialog.Builder(this)
-                                .setTitle("該路線 " + route + " 不在常規路線中。")
-                                .setMessage("確定填寫該路線？")
-                                .setPositiveButton("確定", null)
-                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        switch (number) {
-                                            case 1:
-                                                route1.setText("");
-                                                route1.findFocus();
-                                                break;
-                                            case 2:
-                                                route2.setText("");
-                                                route2.findFocus();
-                                                break;
-                                            case 3:
-                                                route3.setText("");
-                                                route3.findFocus();
-                                                break;
-                                            case 4:
-                                                route4.setText("");
-                                                route4.findFocus();
-                                                break;
-                                        }
-                                        return;
-                                    }
-                                })
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .show();
+                    if (Arrays.stream(station.routeList).noneMatch(text -> text.equalsIgnoreCase(route))) {
+                        showRouteConfirmationDialog(number, route, startTime, endTime, licensePlate, key);
+                    }else{
+                        showConfirmDialog(number, route, startTime, endTime, licensePlate, key);
                     }
-                }
-                else {
+                } else {
                     // Android 6.0 及以下版本，使用传统的 for 循环
                     boolean found = false;
                     for (String text : station.routeList) {
-                        if (text.equalsIgnoreCase(routeText)) {
+                        if (text.equalsIgnoreCase(route.toUpperCase())) {
                             found = true;
                             break;
                         }
                     }
                     if (!found) {
-//                        showToast("該路線 " + route + " 存在於列表中。");
+                        showRouteConfirmationDialog(number, route, startTime, endTime, licensePlate, key);
                     }
-//                    else {
-////                        showToast("路線 " + route + " 不在列表中。");
-//                    }
+                    else{
+                        showConfirmDialog(number, route, startTime, endTime, licensePlate, key);
+                    }
+
                 }
-
-            }
-            else {
-                String routeText = route.toUpperCase(); // 将 route 转为大写
-                String licensePlateText = licensePlate.toUpperCase();
-
-                AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-                dialog.setTitle("確認儲存資料︰");
-                dialog.setMessage("調查員編號︰" + surveyorNo.getText().toString() + "\n調查地點︰" + location.getText().toString() +
-//                        "\n乘客性別︰" + gender +
-                        "\n巴士路線︰" + routeText +
-                        "\n巴士車牌︰" + licensePlateText +
-                        "\n乘客到站時間︰" + startTime +
-                        "\n乘客上車時間︰" + endTime);
-                dialog.setNegativeButton("N0", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-
-                    }
-                });
-                dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-//                        checkPermission();
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                            if (!Environment.isExternalStorageManager()) {
-                                Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
-                                startActivityForResult(intent, REQUEST_CODE_MANAGE_EXTERNAL_STORAGE);
-                                showToast("請先開通讀取權限,否則不能進行保存");
-                            } else if (ActivityCompat.checkSelfPermission(MainActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                // 请求精确位置权限
-                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                Uri uri = Uri.fromParts("package", getPackageName(), null);
-                                intent.setData(uri);
-                                startActivity(intent);
-                                showToast("請先開通位置權限,否則不能進行保存");
-                            } else {
-                                proceedWithOperations(number, routeText, startTime, endTime, licensePlateText,
-//                                    gender,
-                                        key);
-                            }
-                        } else {
-                            int permission = ActivityCompat.checkSelfPermission(MainActivity.this, WRITE_EXTERNAL_STORAGE);
-                            int permissionFine = ActivityCompat.checkSelfPermission(MainActivity.this, ACCESS_FINE_LOCATION);
-                            int permissionCoarse = ActivityCompat.checkSelfPermission(MainActivity.this, ACCESS_COARSE_LOCATION);
-
-                            if (permission != PackageManager.PERMISSION_GRANTED) {
-                                showToast("請先開通讀取權限,否則不能進行保存");
-                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                Uri uri = Uri.fromParts("package", getPackageName(), null);
-                                intent.setData(uri);
-                                startActivity(intent);
-                            } else if (permissionFine != PackageManager.PERMISSION_GRANTED && permissionCoarse != PackageManager.PERMISSION_GRANTED) {
-                                // 检查是否已经被授予了精确位置权限或大致位置权限
-                                showToast("請先開通位置權限，否則不能進行保存");
-                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                Uri uri = Uri.fromParts("package", getPackageName(), null);
-                                intent.setData(uri);
-                                startActivity(intent);
-                            } else {
-                                // 权限已被授予，可以执行存储操作
-                                proceedWithOperations(number, routeText, startTime, endTime, licensePlateText,
-//                                    gender,
-                                        key);
-                            }
-                        }
-                    }
-                });
-
-                dialog.show();
             }
         }
     }
 
+    // 显示路线确认对话框的方法
+    private void showRouteConfirmationDialog(final int number, final String route, final String startTime,
+                                             final String endTime, final String licensePlate,
+                                             String key) {
+        new AlertDialog.Builder(this)
+                .setTitle("該路線 " + route.toUpperCase() + " 不在常規路線中。")
+                .setMessage("確定填寫該路線？")
+                .setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 用户确认后，显示最终的确认对话框
+                        showConfirmDialog(number, route, startTime, endTime, licensePlate, key);
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 用户取消操作
+                        switch (number) {
+                            case 1:
+                                route1.requestFocus();
+                                break;
+                            case 2:
+                                route2.requestFocus();
+                                break;
+                            case 3:
+                                route3.requestFocus();
+                                break;
+                            case 4:
+                                route4.requestFocus();
+                                break;
+                        }
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    // 显示最终确认对话框的方法
+    private void showConfirmDialog(final int number, final String route, final String startTime,
+                                   final String endTime, final String licensePlate,
+                                   String key) {
+        String routeText = route.toUpperCase(); // 将 route 转为大写
+        String licensePlateText = licensePlate.toUpperCase();
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+        dialog.setTitle("確認儲存資料︰");
+        dialog.setMessage("調查員編號︰" + surveyorNo.getText().toString() + "\n調查地點︰" + location.getText().toString() +
+//                        "\n乘客性別︰" + gender +
+                "\n巴士路線︰" + routeText +
+                "\n巴士車牌︰" + licensePlateText +
+                "\n乘客到站時間︰" + startTime +
+                "\n乘客上車時間︰" + endTime);
+        dialog.setNegativeButton("N0", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+
+            }
+        });
+        dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+//                        checkPermission();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    if (!Environment.isExternalStorageManager()) {
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                        startActivityForResult(intent, REQUEST_CODE_MANAGE_EXTERNAL_STORAGE);
+                        showToast("請先開通讀取權限,否則不能進行保存");
+                    } else if (ActivityCompat.checkSelfPermission(MainActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        // 请求精确位置权限
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", getPackageName(), null);
+                        intent.setData(uri);
+                        startActivity(intent);
+                        showToast("請先開通位置權限,否則不能進行保存");
+                    } else {
+                        proceedWithOperations(number, routeText, startTime, endTime, licensePlateText,
+//                                    gender,
+                                key);
+                    }
+                } else {
+                    int permission = ActivityCompat.checkSelfPermission(MainActivity.this, WRITE_EXTERNAL_STORAGE);
+                    int permissionFine = ActivityCompat.checkSelfPermission(MainActivity.this, ACCESS_FINE_LOCATION);
+                    int permissionCoarse = ActivityCompat.checkSelfPermission(MainActivity.this, ACCESS_COARSE_LOCATION);
+
+                    if (permission != PackageManager.PERMISSION_GRANTED) {
+                        showToast("請先開通讀取權限,否則不能進行保存");
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", getPackageName(), null);
+                        intent.setData(uri);
+                        startActivity(intent);
+                    } else if (permissionFine != PackageManager.PERMISSION_GRANTED && permissionCoarse != PackageManager.PERMISSION_GRANTED) {
+                        // 检查是否已经被授予了精确位置权限或大致位置权限
+                        showToast("請先開通位置權限，否則不能進行保存");
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", getPackageName(), null);
+                        intent.setData(uri);
+                        startActivity(intent);
+                    } else {
+                        // 权限已被授予，可以执行存储操作
+                        proceedWithOperations(number, routeText, startTime, endTime, licensePlateText,
+//                                    gender,
+                                key);
+                    }
+                }
+            }
+        });
+
+        dialog.show();
+    }
 //拆出來寫
 //    private void proceedWithOperations(final int number, final String route, final String startTime,
 //                                       final String endTime, final String licensePlate,
@@ -2777,14 +2792,14 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
 
     public void cleanEditText(String type, int number) {
         if (!type.equals("none") && !type.equals("hengqinRouteWithOutWay")) {
-            String route01 = textView_Record_route_1.getText().toString();
-            String licensePlate01 = textView_Record_licensePlate_1.getText().toString();
-            String route02 = textView_Record_route_2.getText().toString();
-            String licensePlate02 = textView_Record_licensePlate_2.getText().toString();
-            String route03 = textView_Record_route_3.getText().toString();
-            String licensePlate03 = textView_Record_licensePlate_3.getText().toString();
-            String route04 = textView_Record_route_4.getText().toString();
-            String licensePlate04 = textView_Record_licensePlate_4.getText().toString();
+            String route01 = textView_Record_route_1.getText().toString().toUpperCase();
+            String licensePlate01 = textView_Record_licensePlate_1.getText().toString().toUpperCase();
+            String route02 = textView_Record_route_2.getText().toString().toUpperCase();
+            String licensePlate02 = textView_Record_licensePlate_2.getText().toString().toUpperCase();
+            String route03 = textView_Record_route_3.getText().toString().toUpperCase();
+            String licensePlate03 = textView_Record_licensePlate_3.getText().toString().toUpperCase();
+            String route04 = textView_Record_route_4.getText().toString().toUpperCase();
+            String licensePlate04 = textView_Record_licensePlate_4.getText().toString().toUpperCase();
             switch (number) {
                 case 1:
                     startTime_1.setText("");
