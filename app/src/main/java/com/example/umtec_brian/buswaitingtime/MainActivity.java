@@ -2896,30 +2896,6 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         saveButton_3 = getView(R.id.saveButton_3);
         saveButton_4 = getView(R.id.saveButton_4);
 
-//        genderF_1 = getView(R.id.genderF_1);
-//        genderF_2 = getView(R.id.genderF_2);
-//        genderF_3 = getView(R.id.genderF_3);
-//        genderF_4 = getView(R.id.genderF_4);
-//
-//        genderM_1 = getView(R.id.genderM_1);
-//        genderM_2 = getView(R.id.genderM_2);
-//        genderM_3 = getView(R.id.genderM_3);
-//        genderM_4 = getView(R.id.genderM_4);
-//
-//        under20_1 = getView(R.id.under20_1);
-//        under20_2 = getView(R.id.under20_2);
-//        under20_3 = getView(R.id.under20_3);
-//        under20_4 = getView(R.id.under20_4);
-//
-//        from20to45_1 = getView(R.id.from20to45_1);
-//        from20to45_2 = getView(R.id.from20to45_2);
-//        from20to45_3 = getView(R.id.from20to45_3);
-//        from20to45_4 = getView(R.id.from20to45_4);
-//
-//        above45_1 = getView(R.id.above45_1);
-//        above45_2 = getView(R.id.above45_2);
-//        above45_3 = getView(R.id.above45_3);
-//        above45_4 = getView(R.id.above45_4);
 
         surveyType_1 = getView(R.id.normal_rd);
         surveyType_2 = getView(R.id.S101x_rb);
@@ -2927,15 +2903,6 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
 
         surveyType_rbg = getView(R.id.surveyType_rbg);
 
-//        genderGroup_1 = getView(R.id.genderGroup_1);
-//        genderGroup_2 = getView(R.id.genderGroup_2);
-//        genderGroup_3 = getView(R.id.genderGroup_3);
-//        genderGroup_4 = getView(R.id.genderGroup_4);
-//
-//        ageGroup_1 = getView(R.id.ageGroup_1);
-//        ageGroup_2 = getView(R.id.ageGroup_2);
-//        ageGroup_3 = getView(R.id.ageGroup_3);
-//        ageGroup_4 = getView(R.id.ageGroup_4);
 
         textView1 = getView(R.id.textView1);
         textView2 = getView(R.id.textView2);
@@ -2958,56 +2925,18 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         textView_Record_route_2 = getView(R.id.textView_Record_route_2);
         textView_Record_route_3 = getView(R.id.textView_Record_route_3);
         textView_Record_route_4 = getView(R.id.textView_Record_route_4);
-//        dialogAddressText = getView(R.id.dialog_address);
+
 
         stationButton = getView(R.id.stationButton);
         constraint = getView(R.id.constraint);
-//        overlay = getView(R.id.overlay);
-//        centerButton_1 = getView(R.id.centerButton_1);
+
         Group1recordButton_1 = getView(R.id.Group1recordButton_1);
         Group1recordButton_2 = getView(R.id.Group1recordButton_2);
         Group1recordButton_3 = getView(R.id.Group1recordButton_3);
         Group1recordButton_4 = getView(R.id.Group1recordButton_4);
     }
 
-    //    public void location() {
-//        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-//        provider = locationManager.getProvider(LocationManager.GPS_PROVIDER).getName();
-//        if (provider != null && !provider.equals("")) {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-//                        || checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-//                }
-//            }
-//            Location location = locationManager.getLastKnownLocation(provider);
-//
-//            LocationListener locationListener = new LocationListener() {
-//                public void onLocationChanged(Location location) {
-//                }
-//
-//                public void onStatusChanged(String provider, int status, Bundle extras) {
-//                }
-//
-//                public void onProviderEnabled(String provider) {
-//                }
-//
-//                public void onProviderDisabled(String provider) {
-//                }
-//            };
-//
-//            locationManager.requestLocationUpdates(provider, 0, 0, locationListener);
-//
-//            if (location != null){
-//                onLocationChanged(location);
-//
-//            }
-//            else {
-//                Toast.makeText(getBaseContext(), "Location can't be retrieved", Toast.LENGTH_SHORT).show();
-//            }
-//        } else {
-//            Toast.makeText(getBaseContext(), "No Provider Found", Toast.LENGTH_SHORT).show();
-//        }
-//    }
+
     public void location() {
         try {
             locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -3093,10 +3022,11 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
             } else if (timeDifference >= BACKGROUND_TIME_THRESHOLD_03) {
                 // 如果时间间隔大于等于3分钟且小于15分钟
                 showCustomDialog("警告");
-            } else {
-                // 弹出自定义对话框
-                showCustomDialog("詢問");
             }
+//            else {
+//                // 弹出自定义对话框
+////                showCustomDialog("詢問");
+//            }
         }
     }
 
@@ -3217,57 +3147,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
             buttonContainer.addView(positiveButton);
         }
     }
-//    private void randomizeButtonPositions(Button positiveButton, Button negativeButton) {
-//        // 获取按钮容器
-//        LinearLayout buttonContainer = (LinearLayout) positiveButton.getParent();
-//
-//        // 移除按钮
-//        buttonContainer.removeView(positiveButton);
-//        buttonContainer.removeView(negativeButton);
-//
-//        // 随机选择一个位置插入“正确”按钮
-//        Random random = new Random();
-//        int position = random.nextInt(buttonContainer.getChildCount() + 1);
-//
-//        // 插入按钮
-//        buttonContainer.addView(positiveButton, position);
-//        buttonContainer.addView(negativeButton, position == 0 ? 1 : 0);
-//    }
 
-    //    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-//    public void onMoveToForeground(){
-//        Log.d("Event","app moved to foreground");
-//        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-//        builder.setTitle("testing");
-//        builder.show();
-//    }
-//    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-//    public void onMoveToBackground() {
-////        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-//        // 使用自定义布局
-//        View customView = LayoutInflater.from(MainActivity.this)
-//                .inflate(R.layout.wranning_dialog_layout, null);
-//
-//        // 获取布局中的控件
-////        TextView message = customView.findViewById(R.id.dialog_message);
-//        Button positiveButton = customView.findViewById(R.id.dialog_button_positive);
-//        Button negativeButton = customView.findViewById(R.id.dialog_button_negative);
-//
-//        // 设置点击事件
-//        positiveButton.setOnClickListener(v -> {
-//            // 处理“正確”按钮的逻辑
-//        });
-//
-//        negativeButton.setOnClickListener(v -> {
-//            // 处理“更改”按钮的逻辑
-//        });
-//
-//        // 创建并显示对话框
-//        AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
-//                .setView(customView)
-//                .create();
-//        dialog.show();
-//    }
 
     //    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void onMoveToBackground() {
