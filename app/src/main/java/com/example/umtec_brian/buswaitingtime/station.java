@@ -39,7 +39,8 @@ class station {
             "T376 連貫公路/巴黎人",
             "T419 機場大馬路/永利皇宮",
             "T551 澳大/研究生宿舍",
-            "T560 橫琴澳方口岸"
+            "T560 橫琴澳方口岸",
+            "其它"
     };
 
     public static final String[] location_101x = {

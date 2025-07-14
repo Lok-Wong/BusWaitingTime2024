@@ -975,15 +975,54 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         alertDialog.setTitle(title);
         alertDialog.setItems(list, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-
-                textView.setText(list[which]);
+                if (list[which].equals("其它")) { // 检测是否选择了“其它”
+                    showOtherLocationDialog(textView); // 弹出输入地址的对话框
+                } else {
+                    textView.setText(list[which]); // 设置选择的站点
+                }
                 textView.setTextColor(getResources().getColor(R.color.colorPrimary));
                 textView2.setTextColor(getResources().getColor(R.color.colorPrimary));
             }
         });
         alertDialog.show();
     }
+    private void showOtherLocationDialog(final TextView textView) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("請輸入站點");
 
+        // 创建输入框
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        // 设置“確定”按钮
+        builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String address = input.getText().toString().trim();
+                if (!address.isEmpty()) {
+                    textView.setText(address+ "(其它)"); // 设置输入的地址
+                    textView.setTextColor(getResources().getColor(R.color.colorPrimary));
+                } else {
+                    Toast.makeText(MainActivity.this, "地址不能為空！", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss(); // 关闭对话框
+                    showOtherLocationDialog(textView); // 重新弹出对话框让用户输入
+                }
+            }
+        });
+
+        // 设置“取消”按钮
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        // 显示对话框
+        builder.show();
+    }
     public final <E extends View> E getView(int id) {
         return (E) findViewById(id);
     }
@@ -2526,13 +2565,20 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         if (!surveyType_3.isChecked()) {
             updateUI(key, route, licensePlate);
         }
-
+        // 处理 location 内容
+        String processedLocation = location.getText().toString();
         if (surveyType_1.isChecked()) {
-            saveDataToFile("normal", route, licensePlate, startTime, endTime, number);
+            // 如果是普通类型，去掉“（其它）”
+            if (processedLocation.endsWith("(其它)")) {
+                processedLocation = processedLocation.substring(0, processedLocation.length() - "(其它)".length());
+            }
+        }
+        if (surveyType_1.isChecked()) {
+            saveDataToFile("normal", route, licensePlate, startTime, endTime, number,processedLocation);
         } else if (surveyType_2.isChecked()) {
-            saveDataToFile("101x", route, licensePlate, startTime, endTime, number);
+            saveDataToFile("101x", route, licensePlate, startTime, endTime, number,processedLocation);
         } else if (surveyType_3.isChecked()) {
-            saveDataToFile("hengqin", route, licensePlate, startTime, endTime, number);
+            saveDataToFile("hengqin", route, licensePlate, startTime, endTime, number,processedLocation);
         }
     }
 
@@ -2635,7 +2681,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
     }
 
 
-    private void saveDataToFile(String type, String route, String licensePlate, String startTime, String endTime, int number) {
+    private void saveDataToFile(String type, String route, String licensePlate, String startTime, String endTime, int number,String processedLocation) {
         String sdcard0Path = Environment.getExternalStorageDirectory().getPath();
         String baseFolderPath = sdcard0Path + "/" + BASE_FOLDER;
         createDirectoryIfNotExists(baseFolderPath);
@@ -2675,7 +2721,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                             route, licensePlate,
                             startTime, endTime,
                             "none", number,
-                            location.getText().toString(), "toastNone"
+                            processedLocation, "toastNone"
 //                Double.parseDouble(lon.getText().toString()), Double.parseDouble(lat.getText().toString())
                     );
                     createDirectoryIfNotExists(specialRoutePath);
@@ -2684,7 +2730,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                             route, licensePlate,
                             startTime, endTime,
                             "normalCleanRoute", number,
-                            location.getText().toString(), "toastCopy"
+                            processedLocation, "toastCopy"
 //                Double.parseDouble(lon.getText().toString()), Double.parseDouble(lat.getText().toString())
                     );
                 } else {
@@ -2694,7 +2740,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                             route, licensePlate,
                             startTime, endTime,
                             "normalCleanRoute", number,
-                            location.getText().toString(), "toastNormal"
+                            processedLocation, "toastNormal"
 //                Double.parseDouble(lon.getText().toString()), Double.parseDouble(lat.getText().toString())
                     );
                 }
