@@ -4,16 +4,12 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.annotation.SuppressLint;
-import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleObserver;
-import android.arch.lifecycle.OnLifecycleEvent;
 import android.arch.lifecycle.ProcessLifecycleOwner;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -29,17 +25,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.text.AllCapsTransformationMethod;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.InputType;
-import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -66,8 +58,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity implements LifecycleObserver {
 
@@ -854,6 +844,22 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         }
     }
 
+    private long timeCalculation(String startTime, String endTime){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
+        try {
+            Date startDate = dateFormat.parse(startTime);
+            Date endDate = dateFormat.parse(endTime);
+            assert startDate != null : "開始時間不能為空";
+            assert endDate != null: "結束時間不能為空";
+            long diffInMillis = endDate.getTime() - startDate.getTime();
+            return diffInMillis;
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
 
     public static boolean hasPermissions(Context context, String... permissions) {
         if (context != null && permissions != null) {
@@ -1441,14 +1447,15 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         Date currentTime = Calendar.getInstance().getTime();
         final String date = sdf.format(currentTime.getTime());
         boolean licensePlate_format = licensePlate.matches("[A-Za-z][A-Za-z][\\d]{4}");
+        boolean route_format = route.matches("^[a-zA-Z0-9]+$");
 //      boolean date_Format = startTime.matches("[0-2]{2}[0-9]{2}\\/[0-1][0-9]\\/[0-3][0-9][[:blank:]][0-2][0-9]:[0-6][0-9]:[0-6][0-9]");
         boolean date_FormatStart = isValidDateTime(startTime);
         boolean date_FormatEnd = isValidDateTime(endTime);
         boolean comparisonTime = isBeforeEndTime(startTime, endTime);
+        long timeCalculation = timeCalculation(startTime,endTime);
 //        textView1.setTextColor(Color.BLACK);
 //        textView2.setTextColor(Color.BLACK);
 //        Group1TextView3.setTextColor(Color.BLACK);
-
 
         if (surveyorNo.getText().toString().isEmpty()) {
             textView1.setTextColor(Color.RED);
@@ -1456,12 +1463,16 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         } else if (location.getText().toString().isEmpty()) {
             textView2.setTextColor(Color.RED);
             Toast.makeText(this, "請輸入調查地點", Toast.LENGTH_SHORT).show();
+        } else if (!surveyType_3.isChecked() & !route_format) {
+            Toast.makeText(this, "請輸入正確的巴士編號（不可有符號或空格）。", Toast.LENGTH_SHORT).show();
         } else if (!licensePlate_format) {
             Toast.makeText(this, "請輸入六位巴士車牌。", Toast.LENGTH_SHORT).show();
         } else if (!date_FormatStart || !date_FormatEnd) {
             Toast.makeText(this, "請輸入準確的時間", Toast.LENGTH_SHORT).show();
         } else if (!comparisonTime) {
             Toast.makeText(this, "開始時間應小於結束時間", Toast.LENGTH_SHORT).show();
+        } else if (timeCalculation > 5400000) {
+            Toast.makeText(this,"乘客等待時間不能多於1.5小時", Toast.LENGTH_SHORT).show();
         } else {
 
             if ((route.isEmpty() || endTime.isEmpty()) && !surveyType_3.isChecked()) {
