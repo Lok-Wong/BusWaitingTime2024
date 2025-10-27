@@ -58,13 +58,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import android.provider.Settings;
+import android.content.Context;
 
 
 public class MainActivity extends AppCompatActivity implements LifecycleObserver {
 
-    String[] placeArray = {"永利皇宮","新濠天地","星際酒店","澳門銀河","威尼斯人","巴黎人","倫敦人","金沙","葡京","上葡京","回力海立方","十六浦"};
+    String[] placeArray = {"M/永往澳","M/永往氹","澳娛","新濠天地","星際酒店","澳門銀河","威尼斯人","巴黎人","倫敦人","金沙","葡京","上葡京","回力海立方","十六浦"};
     String[] typeList = {"關閘"};
-    // 定義文件存儲的基本路徑作為常量
     EditText location, surveyorNo, carPlate_et, carPlate_et2, upPPl_et,upPPl_et2,downppl_et,downppl_et2,leftppl_et,leftppl_et2;
     Button saveButton_1, saveButton_2,stationButton;
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -180,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                             String.valueOf(surveyorNo.getText()),
                             dateFormat.format(date)
                     );
-                    carPlate_et.setText("");
+                    carPlate_et.setText("0000");
                     downppl_et.setText("0");
                     upPPl_et.setText("0");
                     leftppl_et.setText("0");
@@ -261,8 +262,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                             String.valueOf(surveyorNo.getText()),
                             dateFormat.format(date)
                     );
-                    carPlate_et2.setText("");
-                    carPlate_et2.setText("");
+                    carPlate_et2.setText("0000");
                     downppl_et2.setText("0");
                     upPPl_et2.setText("0");
                     leftppl_et2.setText("0");
@@ -338,7 +338,9 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
             Toast.makeText(this, "Create folder failed, please contact your admin!!!!", Toast.LENGTH_SHORT).show();
             return;
         }
-        String fileName = currentDateandTime + location.getText().toString() + ".txt";
+        String deviceId = DeviceUtils.getAndroidId(this);
+
+        String fileName = currentDateandTime + "-" + location.getText().toString() + "-" + deviceId + ".txt";
         String filePath = fileDir +"/" + fileName;
         File file = new File(filePath);
         boolean isFirstRecord = !file.exists() || file.length() == 0;
@@ -346,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         try {
             FileOutputStream fos = new FileOutputStream(filePath, true);
             if (isFirstRecord) {
-                fos.write(("公司"+"_"+"車牌"+"_"+"上車人數"+"_"+"落車人數"+"_"+"排隊剩餘人數"+"_"+"地點"+"_"+"調查員"+"_"+"時間"+",").getBytes());   // Windows 風格；只想要 \n 也行
+                fos.write(("公司"+"_"+"車牌"+"_"+"排隊人數"+"_"+"鐵欄外人數"+"_"+"停車數"+"_"+"地點"+"_"+"調查員"+"_"+"時間"+",").getBytes());   // Windows 風格；只想要 \n 也行
                 fos.write("\r\n".getBytes());
             }
             fos.write((parm1 + "_" + parm2 + "_" + parm3 + "_" + parm4 +"_" + parm5 +"_" + parm6 +"_" + parm7 + "_" + parm8 +",").getBytes());
@@ -386,6 +388,17 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                 (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
         v.clearFocus();
+    }
+
+    public static class DeviceUtils {
+        // 獲取 Android ID（推薦）
+        public static String getAndroidId(Context context) {
+            String androidId = Settings.Secure.getString(
+                    context.getContentResolver(),
+                    Settings.Secure.ANDROID_ID
+            );
+            return androidId;
+        }
     }
 
 }
