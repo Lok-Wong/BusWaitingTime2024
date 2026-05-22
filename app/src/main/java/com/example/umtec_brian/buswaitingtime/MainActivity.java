@@ -99,8 +99,8 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
     Spinner spinner1, spinner2, spinner3, spinner4;
     LocationManager locationManager;
     double lat, lon;
-    String[] busNumArray = {"請選擇", "25B", "25BS", "50", "102X", "701X (往望德聖母灣)", "701X (往澳大)", "701XS", "其它"};
-    String[] typeList = {"普通", "101x/102x", "橫琴"};
+    String[] busNumArray = {"請選擇", "25B", "25BS", "50", "102", "701X (往望德聖母灣)", "701X (往澳大)", "701XS", "其它"};
+    String[] typeList = {"普通", "101x/102", "橫琴"};
     // 定義文件存儲的基本路徑作為常量
     private static final String BASE_FOLDER = "UMTEC";
     private static final String BUS_WAITING_TIME_FOLDER = "BusWaitingTime";
