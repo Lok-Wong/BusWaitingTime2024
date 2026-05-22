@@ -10,7 +10,7 @@
 <!--    <FrameLayout-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="wrap_content">-->
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -427,12 +427,12 @@
                 android:checked="true"
                 android:text="普通" />
 
-            <RadioButton
-                android:id="@+id/S101x_rb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:text="101x/102" />
+                <RadioButton
+                    android:id="@+id/S101x_rb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:text="101/102" />
 
             <RadioButton
                 android:id="@+id/hengqin_rb"
@@ -480,12 +480,13 @@
             app:layout_constraintBottom_toBottomOf="@+id/textView2"
             app:layout_constraintStart_toEndOf="@+id/location"
             app:layout_constraintTop_toBottomOf="@+id/textView1" />
+
             <TextView
                 android:id="@+id/version"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="ver:26.2.10"
+                android:text="ver:26.5.22"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -1558,7 +1559,7 @@
 <!--            app:layout_constraintCircleRadius="100dp"-->
 <!--            app:layout_constraintCircleAngle="190"-->
 <!--            tools:ignore="MissingConstraints" />-->
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 <!--        <FrameLayout-->
 <!--            android:id="@+id/mask_layout"-->
 <!--            android:layout_width="match_parent"-->

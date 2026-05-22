@@ -63,11 +63,12 @@ class station {
             "M69 葡京酒店",
             "T355 蓮花路停車場",
             "M159 總統酒店",
-            "T424 海濱圓形地/生態保護區"
+            "T424 海濱圓形地/生態保護區",
+            "其它",
     };
 
     public static final String[] location_hengqin = {
-            "T560 橫琴澳方口岸",
+            "T560 橫琴澳方口岸"
     };
 
     public static final List<String> locationNeedCopy = Arrays.asList(

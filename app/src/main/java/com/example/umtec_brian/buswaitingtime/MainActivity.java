@@ -7,10 +7,10 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.Settings;
-import android.support.constraint.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import android.annotation.SuppressLint;
-import android.arch.lifecycle.LifecycleObserver;
-import android.arch.lifecycle.ProcessLifecycleOwner;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.ProcessLifecycleOwner;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -21,9 +21,9 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
     LocationManager locationManager;
     double lat, lon;
     String[] busNumArray = {"請選擇", "25B", "25BS", "50", "102", "701X (往望德聖母灣)", "701X (往澳大)", "701XS", "其它"};
-    String[] typeList = {"普通", "101x/102", "橫琴"};
+    String[] typeList = {"普通", "101/102", "橫琴"};
     // 定義文件存儲的基本路徑作為常量
     private static final String BASE_FOLDER = "UMTEC";
     private static final String BUS_WAITING_TIME_FOLDER = "BusWaitingTime";
@@ -2587,7 +2587,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         if (surveyType_1.isChecked()) {
             saveDataToFile("normal", route, licensePlate, startTime, endTime, number,processedLocation);
         } else if (surveyType_2.isChecked()) {
-            saveDataToFile("101x", route, licensePlate, startTime, endTime, number,processedLocation);
+            saveDataToFile("101", route, licensePlate, startTime, endTime, number,processedLocation);
         } else if (surveyType_3.isChecked()) {
             saveDataToFile("hengqin", route, licensePlate, startTime, endTime, number,processedLocation);
         }
@@ -2628,7 +2628,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         switch (type) {
             case "name_copy":
                 return baseFileName + "-CN" + "-" + deviceId + ".txt";
-            case "name_101x":
+            case "name_101":
                 return baseFileName + "-x" + "-" + deviceId + ".txt";
             case "name_hengqin":
                 return baseFileName + "-h" + "-" + deviceId + ".txt";
@@ -2712,7 +2712,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
 
         String fileName = getFileName(surveyorNo.getText().toString(), currentDate, "name_normal");
         String fileNameCopy = getFileName(surveyorNo.getText().toString(), currentDate, "name_copy");
-        String fileNameX = getFileName(surveyorNo.getText().toString(), currentDate, "name_101x");
+        String fileNameX = getFileName(surveyorNo.getText().toString(), currentDate, "name_101");
         String fileNameH = getFileName(surveyorNo.getText().toString(), currentDate, "name_hengqin");
         String fileNameHCopy = getFileName(surveyorNo.getText().toString(), currentDate, "name_hengqin_Copy");
         String checkingBusStop = String.valueOf(location.getText());
@@ -2756,7 +2756,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                     );
                 }
                 break;
-            case "101x":
+            case "101":
                 createDirectoryIfNotExists(specialRoutePath);
                 writeToFileTryAndCatch(
                         surveyorNo.getText().toString(), specialRoutePath + fileNameX,
@@ -3170,7 +3170,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                         locationListItem = station.location;
                         surveyType_1.setChecked(true);
                         break;
-                    case "101x/102x":
+                    case "101/102":
                         locationListItem = station.location_101x;
                         surveyType_2.setChecked(true);
                         break;
@@ -3231,7 +3231,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                         locationListItem = station.location;
                                         surveyType_1.setChecked(true);
                                         break;
-                                    case "101x/102x":
+                                    case "101/102":
                                         locationListItem = station.location_101x;
                                         surveyType_2.setChecked(true);
                                         break;

@@ -10,7 +10,7 @@
     <!--    <FrameLayout-->
     <!--        android:layout_width="match_parent"-->
     <!--        android:layout_height="wrap_content">-->
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -1562,7 +1562,7 @@
         <!--            app:layout_constraintCircleRadius="100dp"-->
         <!--            app:layout_constraintCircleAngle="190"-->
         <!--            tools:ignore="MissingConstraints" />-->
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <!--        <FrameLayout-->
     <!--            android:id="@+id/mask_layout"-->
     <!--            android:layout_width="match_parent"-->
