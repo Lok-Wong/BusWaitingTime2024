@@ -440,6 +440,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:text="橫琴" />
+
+            <RadioButton
+                android:id="@+id/other_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:text="其他" />
         </RadioGroup>
 
         <TextView

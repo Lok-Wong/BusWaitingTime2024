@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
 //            genderM_3, genderF_3, under20_3, from20to45_3, above45_3,
 //            genderM_4, genderF_4, under20_4, from20to45_4, above45_4,
 //            rb1, rb2, rb3, rb4,
-            surveyType_1, surveyType_2, surveyType_3;
+            surveyType_1, surveyType_2, surveyType_3, surveyType_4;
     TextView textView1, textView2,
             Group1TextView3, Group2TextView3, Group3TextView3, Group4TextView3,
             textView_Record_route_1, textView_Record_route_2, textView_Record_route_3, textView_Record_route_4,
@@ -100,12 +100,13 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
     LocationManager locationManager;
     double lat, lon;
     String[] busNumArray = {"請選擇", "25B", "25BS", "50", "102", "701X (往望德聖母灣)", "701X (往澳大)", "701XS", "其它"};
-    String[] typeList = {"普通", "101/102", "橫琴"};
+    String[] typeList = {"普通", "101/102", "橫琴", "其他"};
     // 定義文件存儲的基本路徑作為常量
     private static final String BASE_FOLDER = "UMTEC";
     private static final String BUS_WAITING_TIME_FOLDER = "BusWaitingTime";
     private static final String SPECIAL_ROUTE_FOLDER = "BusWaitingTime(specialRoute)";
     private static final String HENGQIN_FOLDER = "BusWaitingTime(hengqin)";
+    private static final String OTHER_FOLDER = "BusWaitingTime(other)";
     private static final String SURVEYOR_FOLDER_PREFIX = "data_";
     private ArrayAdapter<String> sharedAdapter; // 共享适配器
     private List<String> spinnerData; // 共享数据源
@@ -547,6 +548,9 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                 }
                 if (surveyType_3.isChecked()) {
                     locationList(location, "請選擇站點︰", station.location_hengqin);
+                }
+                if (surveyType_4.isChecked()) {
+                    locationList(location, "請選擇站點︰", station.location);
                 }
             }
         });
@@ -2590,6 +2594,8 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
             saveDataToFile("101", route, licensePlate, startTime, endTime, number,processedLocation);
         } else if (surveyType_3.isChecked()) {
             saveDataToFile("hengqin", route, licensePlate, startTime, endTime, number,processedLocation);
+        } else if (surveyType_4.isChecked()) {
+            saveDataToFile("other", route, licensePlate, startTime, endTime, number,processedLocation);
         }
     }
 
@@ -2634,6 +2640,8 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                 return baseFileName + "-h" + "-" + deviceId + ".txt";
             case "name_hengqin_Copy":
                 return baseFileName + "-CH" + "-" + deviceId + ".txt";
+            case "name_other":
+                return baseFileName + "-o" + "-" + deviceId + ".txt";
             default:
                 return baseFileName + "-" + deviceId + ".txt";
         }
@@ -2707,6 +2715,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         String filePath = baseFolderPath + "/" + BUS_WAITING_TIME_FOLDER + "/" + yearStr + "/" + yearStr + monthStr + "/";
         String specialRoutePath = baseFolderPath + "/" + SPECIAL_ROUTE_FOLDER + "/" + yearStr + "/" + yearStr + monthStr + "/";
         String hengqinPath = baseFolderPath + "/" + HENGQIN_FOLDER + "/" + "/" + yearStr + "/" + yearStr + monthStr + "/";
+        String otherPath = baseFolderPath + "/" + OTHER_FOLDER + "/" + yearStr + "/" + yearStr + monthStr + "/";
 //        createDirectoryIfNotExists(filePath);
 
 
@@ -2715,6 +2724,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         String fileNameX = getFileName(surveyorNo.getText().toString(), currentDate, "name_101");
         String fileNameH = getFileName(surveyorNo.getText().toString(), currentDate, "name_hengqin");
         String fileNameHCopy = getFileName(surveyorNo.getText().toString(), currentDate, "name_hengqin_Copy");
+        String fileNameOther = getFileName(surveyorNo.getText().toString(), currentDate, "name_other");
         String checkingBusStop = String.valueOf(location.getText());
 //            if (station.locationNeedCopy.contains(checkingBusStop)) {
 //
@@ -2794,6 +2804,16 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                         "hengqinOption", number,
                         location.getText().toString(), "toastCopyHengQin"
 //                Double.parseDouble(lon.getText().toString()), Double.parseDouble(lat.getText().toString())
+                );
+                break;
+            case "other":
+                createDirectoryIfNotExists(otherPath);
+                writeToFileTryAndCatch(
+                        surveyorNo.getText().toString(), otherPath + fileNameOther,
+                        route, licensePlate,
+                        startTime, endTime,
+                        "normalCleanRoute", number,
+                        processedLocation, "toastNormal"
                 );
                 break;
         }
@@ -2957,6 +2977,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         surveyType_1 = getView(R.id.normal_rd);
         surveyType_2 = getView(R.id.S101x_rb);
         surveyType_3 = getView(R.id.hengqin_rb);
+        surveyType_4 = getView(R.id.other_rb);
 
         surveyType_rbg = getView(R.id.surveyType_rbg);
 
@@ -3178,6 +3199,10 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                         locationListItem = station.location_hengqin;
                         surveyType_3.setChecked(true);
                         break;
+                    case "其他":
+                        locationListItem = station.location;
+                        surveyType_4.setChecked(true);
+                        break;
                 }
                 // 假设locationList是一个方法，用于处理位置列表
                 locationList(location, "請選擇站點︰", locationListItem);
@@ -3238,6 +3263,10 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                                     case "橫琴":
                                         locationListItem = station.location_hengqin;
                                         surveyType_3.setChecked(true);
+                                        break;
+                                    case "其他":
+                                        locationListItem = station.location;
+                                        surveyType_4.setChecked(true);
                                         break;
                                 }
                                 locationList(location, "請選擇站點︰", locationListItem);
